@@ -1,0 +1,21 @@
+{
+  "name": "project_d5c1m_v4p9a_z1q8i",
+  "version": "1.0.0",
+  "description": "",
+  "main": "appController.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.students.cs.ubc.ca:CPSC304-2024W-T2/project_d5c1m_v4p9a_z1q8i.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
