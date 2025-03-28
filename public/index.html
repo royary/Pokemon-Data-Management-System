@@ -12,14 +12,14 @@
         <p>Optimize your gameplay with data-driven insights</p>
     </header>
         
-        <div class="grid">
+   
         <div class="card">
             <h2>View Pokémon Database</h2>
             <p>View all your Pokémon data here.</p>
             <button class="button">View</button>
         </div>
 
-        <div class="grid">
+     
             <div class="card">
                 <h2>Update Pokémon Database</h2>
                 <p>Update Pokémon here.</p>
@@ -28,14 +28,20 @@
 
 
       
-        <div class="grid">
-                <div class="card">
-                    <h2>Add Pokémon Database</h2>
-                    <p>Access and manage your Pokémon collection with detailed statistics and information.</p>
-                    <button class="button">Add Database</button>
+     
+        <div class="card">
+            <h2>Add Pokémon Database</h2>
+            <p>Access and manage your Pokémon collection with detailed statistics and information.</p>
+            <button class="button" id="showFormButton">Add</button>
+            <form id="insertDemotable" style="display: none;">
+                ID: <input type="number" id="insertId" placeholder="Enter ID" required> <br><br>
+                Name: <input type="text" id="insertName" placeholder="Enter Name" maxlength="20"> <br><br>
+                <button type="submit"> insert </button> <br>
+            </form>
+            <div id="insertResultMsg"></div>
         </div>
 
-        <div class="grid">
+  
         <div class="card">
                 <h2>Reset Pokémon Database</h2>
                 <p>Please reconsider before clicking</p>
@@ -44,6 +50,9 @@
 
         </div>
     </div>
+    <script src = "scripts.js">
+
+    </script>
 
 </body>
 </html>
