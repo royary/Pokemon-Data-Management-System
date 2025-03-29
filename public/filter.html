@@ -97,6 +97,24 @@
         </div>
     </div>
 
+    <div class="container">
+        <div class="card">
+    <div class="projection-controls" id="projection-controls">
+        <h3>Select Attributes to Display:</h3>
+        <div>
+            <label><input type="checkbox" name="projectionAttributes" value="PokemonID" checked> PokemonID</label>
+            <label><input type="checkbox" name="projectionAttributes" value="PokemonName" checked> PokemonName</label>
+            <label><input type="checkbox" name="projectionAttributes" value="TypeName" checked> TypeName</label>
+            <label><input type="checkbox" name="projectionAttributes" value="Ability" checked> Ability</label>
+            <label><input type="checkbox" name="projectionAttributes" value="Weakness" checked> Weakness</label>
+            <label><input type="checkbox" name="projectionAttributes" value="Resistance" checked> Resistance</label>
+            <label><input type="checkbox" name="projectionAttributes" value="Strength" checked> Strength</label>
+        </div>
+        <button class="button" onclick="applyProjection()">Apply</button>
+    </div>
+</div>
+<div>
+
     <script src="filter.js"></script>
 </body>
 </html>
