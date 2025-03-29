@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Pokémon by Trainer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <h1>Find Pokémon by Trainer</h1>
+        <p>Search for Pokémon owned by specific trainers</p>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>Search By Trainer</h2>
+            <form id="trainerSearchForm">
+                <div style="margin: 20px 0;">
+                    <label for="trainerID">Enter Trainer ID:</label>
+                    <input 
+                        type="text" 
+                        id="trainerID" 
+                        placeholder="Enter trainer id" 
+                        required
+                        style="padding: 8px; margin-left: 10px; border-radius: 4px; border: 1px solid #ccc;"
+                    >
+                </div>
+
+                <button type="submit" class="button">Search</button>
+                <button type="button" class="button" onclick="window.location.href='/'">Back to Home</button>
+            </form>
+
+            <!-- Results Table -->
+            <div style="margin-top: 20px;">
+                <table id="resultsTable" border="1" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>Trainer</th>
+                            <th>Pokémon</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="searchResultMsg"></div>
+        </div>
+    </div>
+    <script src="trainer-search.js"></script>
+</body>
+</html>

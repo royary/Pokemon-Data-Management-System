@@ -96,6 +96,15 @@ async function updateTable(event){
 
 }
 
+const filterSystemButton = document.getElementById('filterSystemButton');
+filterSystemButton.addEventListener('click', function() {
+    window.location.href = '/filter.html';
+});
+
+const trainerSearch = document.getElementById('trainerSearch');
+trainerSearch.addEventListener('click', function() {
+    window.location.href = '/trainer-search.html';
+});
 
 window.onload = function() {
     fetchAndDisplayUsers();

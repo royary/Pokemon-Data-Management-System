@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Filter System</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .condition-group {
+            background-color: #f0f0f0;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+        .condition {
+            margin: 10px 0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .group-operator {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #e0e0e0;
+            text-align: center;
+            font-weight: bold;
+        }
+        select, input {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        .add-buttons {
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Pokémon Filter System</h1>
+        <p>Find the perfect Pokémon for your team</p>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>Filter Options</h2>
+            
+            <div id="filter-container">
+                <!-- Condition Group 1 -->
+                <div class="condition-group" id="group-1">
+                    <h3>Condition Group 1</h3>
+                    
+                    <div class="condition">
+                        <select class="attribute-select">
+                            <option value="TypeName">TypeName</option>
+                            <option value="Ability">Ability</option>
+                            <option value="Weakness">Weakness</option>
+                            <option value="Strength">Strength</option>
+                        </select>
+
+                        <select class="operator-select">
+                            <option value="=">=</option>
+                            <option value="!=">!=</option>
+                            <option value=">">&gt;</option>
+                            <option value="<">&lt;</option>
+                            <option value=">=">&gt;=</option>
+                            <option value="<=">&lt;=</option>
+                        </select>
+
+                        <input type="text" class="value-input" placeholder="Enter value">
+
+                        <select class="logic-select">
+                            <option value="AND">AND</option>
+                            <option value="OR">OR</option>
+                        </select>
+
+                        <button class="smallbutton" onclick="removeCondition(this)">Remove</button>
+                    </div>
+                </div>
+
+                <div class="group-operator">
+                    <select class="group-logic-select">
+                        <option value="OR">OR</option>
+                        <option value="AND">AND</option>
+                    </select>
+                </div>
+
+                <!-- Add Group Button -->
+                <div class="add-buttons">
+                    <button class="button" onclick="addConditionGroup()">+ Add New Condition Group</button>
+                </div>
+
+                <!-- Search Button -->
+                <button class="button" onclick="performSearch()">Search</button>
+                <button class="button" onclick="window.location.href='/'">Back to Home</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="filter.js"></script>
+</body>
+</html>
