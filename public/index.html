@@ -32,11 +32,16 @@
             <div class="card">
                 <h2>Update Pokémon Database</h2>
                 <p>Update Pokémon here.</p>
-                <button class="button">Update</button>
+                <button class="button" id="showFormButton">Update</button>
+                <form id="updateTable">
+                    Old Name: <input type="text" id="updateOldName" placeholder="Enter Old Name" required> <br><br>
+                    New Name: <input type="text" id="updateNewName" placeholder="Enter New Name" maxlength="20"> <br><br>
+            
+                    <button type="submit"> update </button> <br>
+                </form>
+                <div id="updateResultMsg" ></div>
         </div>
 
-
-      
      
         <div class="card">
             <h2>Add Pokémon Database</h2>

@@ -2,6 +2,7 @@
 
 const form = document.getElementById('insertDemotable');
 const form2 = document.getElementById('resetDemotable');
+const form3 = document.getElementById('updateTable');
 
 
 async function fetchAndDisplayUsers() {
@@ -73,9 +74,32 @@ async function insertDemotable(event){
 
 }
 
+async function updateTable(event){
+    event.preventDefault();
+    const oldNameValue = document.getElementById('updateOldName').value;
+    const newNameValue = document.getElementById('updateNewName').value;
+    const response = await fetch('/update-table', {
+        method: 'PUT'
+    });
+    const responseData = await response.json();
+    if(responseData.success) {
+        const messageElement = document.getElementById('updateResultMsg');
+        messageElement.textContent = "table update successfully";
+        fetchAndDisplayUsers();
+    } else {
+        alert("Error update Table");
+    }
 
-form2.addEventListener("click", resetDemotable);
-form.addEventListener("submit", insertDemotable);
+}
+
+
+window.onload = function() {
+    fetchAndDisplayUsers();
+    form2.addEventListener("click", resetDemotable);
+    form.addEventListener("submit", insertDemotable);
+    form3.addEventListener("click", updateTable)
+}
+
 
 
 

@@ -107,6 +107,18 @@ async function insertDemotable(id, name) {
     });
 }
 
+async function updateTable(oldname, newname) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `UPDATE POKEMON SET name=:oldname where name=:newname`,
+            [newName, oldName],
+            { autoCommit: true }
+        );
+        return result.rowsAffected && result.rowsAffected > 0;
+    }).catch(() => {
+        return false;
+    });
+}
 
 
 

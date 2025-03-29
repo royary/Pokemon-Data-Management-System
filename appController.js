@@ -17,7 +17,15 @@ router.post("/initiate-demotable", async (req, res) => {
     }
 });
 
-
+router.put("/update-table", async (req, res) => {
+    const {oldname, newname} = req.body;
+    const updateResult = await appService.updateTable(oldname, newname);
+    if(insertResult) {
+        res.json({success: true});
+    }else {
+        res.status(500).json({success: false});
+    }
+});
 
 
 router.post("/insert-demotable", async (req, res) => {
