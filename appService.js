@@ -62,6 +62,15 @@ async function withOracleDB(action) {
     }
 }
 
+async function fetchDemotableFromDb() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(`SELECT * FROM POKEMON`);
+        return result.rows;
+    }).catch(()=>{
+        return [];
+    });
+}
+
 async function initiateDemotable() {
     return await withOracleDB(async (connection) => {
         try {
@@ -103,4 +112,5 @@ async function insertDemotable(id, name) {
 
 
 module.exports = {initiateDemotable, 
+    fetchDemotableFromDb,
     insertDemotable}

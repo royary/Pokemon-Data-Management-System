@@ -3,6 +3,30 @@
 const form = document.getElementById('insertDemotable');
 const form2 = document.getElementById('resetDemotable');
 
+
+async function fetchAndDisplayUsers() {
+    const tableElement = document.getElementById('viewTable');
+    const tableBody = tableElement.querySelector('tbody');
+
+    const response = await fetch('/viewTable', {
+        method: 'GET'
+    });
+    const responseData = await response.json();
+    const demotableContent = responseData.data;
+
+    if(tableBody) {
+        tableBody.innerHTML = '';
+    }
+
+    demotableContent.forEach(user => {
+        const row = tableBody.insertRow();
+        user.forEach((field, index) => {
+            const cell = row.insertCell(index);
+            cell.textContent = field;
+        });
+    });
+}
+
 async function resetDemotable(){
 const response = await fetch('/initiate-demotable', {
     method: 'POST'
@@ -12,6 +36,7 @@ const responseData = await response.json();
 if(responseData.success) {
     const messageElement = document.getElementById('resetResultMsg');
     messageElement.textContent = "table initiated successfully";
+    fetchAndDisplayUsers();
 } else {
     alert("Error initiating Table");
 }
@@ -41,6 +66,7 @@ async function insertDemotable(event){
 
     if(responseData.success) {
         messageElement.textContent = "Data inserted successfully";
+        fetchAndDisplayUsers();
     }else {
         messageElement.textContent = "Error inserting Data";
     }

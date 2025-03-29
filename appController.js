@@ -3,6 +3,11 @@ const router = express.Router();
 const appService = require('./appService'); 
 
 
+router.get('/viewTable', async(req, res) => {
+    const tableContent = await appService.fetchDemotableFromDb();
+    res.json({data: tableContent});
+});
+
 router.post("/initiate-demotable", async (req, res) => {
     const initiateResult = await appService.initiateDemotable();
     if(initiateResult) {

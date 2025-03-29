@@ -80,6 +80,14 @@ body {
     margin-top: 2rem;
 }
 
+th, td {
+    padding: 10px;
+    width: 100px;
+    height: 40px;
+    text-align: center;
+  }
+
+
 @media (max-width: 768px) {
     .grid {
         grid-template-columns: 1fr;
