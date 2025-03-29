@@ -1,6 +1,7 @@
 const oracledb = require('oracledb');
 const loadEnvFile = require('./utils/envUtil');
-
+const fs = require('fs');
+const path = require('path');
 const envVariables = loadEnvFile('./.env');
 
 // Database configuration setup. Ensure your .env file has the required database credentials.
@@ -71,28 +72,66 @@ async function fetchDemotableFromDb() {
     });
 }
 
+// async function initiateDemotable() {
+//     return await withOracleDB(async (connection) => {
+//         try {
+//             await connection.execute(`DROP TABLE POKEMON`);
+//         } catch(err) {
+//             console.log('Table might not exist, proceeding to creat...');
+//         }
+
+//         const result = await connection.execute(`
+//             CREATE TABLE POKEMON (
+//             id NUMBER PRIMARY KEY,
+//             name VARCHAR2(20)
+//             )
+//         `);
+//         console.log("Initialize table")
+//         return true;
+//     }).catch(()=> {
+//         return false;
+//     }
+//     );
+// }
 async function initiateDemotable() {
     return await withOracleDB(async (connection) => {
         try {
-            await connection.execute(`DROP TABLE POKEMON`);
-        } catch(err) {
-            console.log('Table might not exist, proceeding to creat...');
+            
+            const createTableScript = fs.readFileSync(
+                path.join(__dirname, '/SQL/createTableScript.sql'), 
+                'utf8'
+            );
+          
+            const statements = createTableScript.split("END;\n/").map(statement => statement.trim()).filter(statement => statement.length > 0);
+            
+            // Execute each statement in the script
+            for (let statement of statements) {
+                if (statement.startsWith("--")) continue;
+                if (statement.startsWith("BEGIN")) {
+                    
+                    statement += "END;"
+                    console.log("stat:", statement)
+                    await connection.execute(statement);
+                } else {
+                    substatements = statement.split(';').map(sub => sub.trim() + ";").filter(sub => sub.length > 0);
+                    for (let sub of substatements) {
+                        console.log("sub:", sub)
+                        // await connection.execute(sub);
+                    }
+                }
+            }
+
+            console.log("Tables initialized from script");
+            return true;
+        } catch (err) {
+            console.error("Error initializing tables:", err);
+            return false;
         }
-
-        const result = await connection.execute(`
-            CREATE TABLE POKEMON (
-            id NUMBER PRIMARY KEY,
-            name VARCHAR2(20)
-            )
-        `);
-        console.log("Initialize table")
-        return true;
-    }).catch(()=> {
+    }).catch((err) => {
+        console.error("Database connection error:", err);
         return false;
-    }
-    );
+    });
 }
-
 
 async function insertDemotable(id, name) {
     return await withOracleDB(async (connection) => {
