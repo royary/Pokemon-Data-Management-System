@@ -1,8 +1,11 @@
 const express = require('express');
 const appController = require('./appController');
 
+const loadEnvFile = require('./utils/envUtil');
+const envVariables = loadEnvFile('./.env');
+
 const app = express();
-const PORT = 65534;
+const PORT = envVariables.PORT
 
 
 app.use(express.static('public'));
