@@ -75,6 +75,69 @@
                 <div id="resetResultMsg"></div>
         </div>
 
+        <div class="card">
+            <h2>Average Attack by Type</h2>
+            <p>View the average attack statistics for each Pokémon type</p>
+            <button class="button" id="showAvgAttackButton">Show Average Attack by Type</button>
+            <table id="avgAttackTable" border="1" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>TypeName</th>
+                        <th>AvgAttack</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>Types with High Defense</h2>
+            <p>View the average defense statistics for each Pokémon type</p>
+            <button class="button" id="showHighDefenseButton">Find Types with High Defense</button>
+            <table id="highDefenseTable" border="1" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>TypeName</th>
+                        <th>AvgDefense</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>Trainers with Strong Pokémon</h2>
+            <p>View trainers ranked by their Pokémon's average total stats</p>
+            <button class="button" id="showStrongTrainersButton">Find Trainers with Strong Pokémon</button>
+            <table id="strongTrainersTable" border="1" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>TrainerName</th>
+                        <th>AvgTotalStats</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>Trainers with All Categories</h2>
+            <p>View trainers who have Pokémon from every category</p>
+            <button class="button" id="showAllCategoriesTrainersButton">Find Trainers with All Categories</button>
+            <table id="allCategoriesTrainersTable" border="1" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>TrainerName</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
         </div>
     </div>
     <script src = "scripts.js">
