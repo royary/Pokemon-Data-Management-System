@@ -32,12 +32,12 @@
             <div class="card">
                 <h2>Update Pokémon Database</h2>
                 <p>Update Pokémon here.</p>
-                <button class="button" id="showFormButton">Update</button>
-                <form id="updateTable">
+                <button class="button" id="showUpdateFormButton">Update</button>
+                <form id="updateTable" style="display: none;">
                     Old Name: <input type="text" id="updateOldName" placeholder="Enter Old Name" required> <br><br>
                     New Name: <input type="text" id="updateNewName" placeholder="Enter New Name" maxlength="20"> <br><br>
             
-                    <button type="submit"> update </button> <br>
+                    <button type="submit" class="smallbutton"> Submit </button> <br>
                 </form>
                 <div id="updateResultMsg" ></div>
         </div>
@@ -50,7 +50,7 @@
             <form id="insertDemotable" style="display: none;">
                 ID: <input type="number" id="insertId" placeholder="Enter ID" required> <br><br>
                 Name: <input type="text" id="insertName" placeholder="Enter Name" maxlength="20"> <br><br>
-                <button type="submit" class="smallbutton">Insert</button> <br>
+                <button type="submit" class="smallbutton">Submit</button> <br>
             </form>
             <div id="insertResultMsg"></div>
         </div>

@@ -110,10 +110,11 @@ async function insertDemotable(id, name) {
 async function updateTable(oldname, newname) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
-            `UPDATE POKEMON SET name=:oldname where name=:newname`,
-            [newName, oldName],
+            `UPDATE POKEMON SET name=:newname where name=:oldname`,
+            [newname, oldname],
             { autoCommit: true }
         );
+        console.log(result, oldname, newname)
         return result.rowsAffected && result.rowsAffected > 0;
     }).catch(() => {
         return false;
@@ -124,5 +125,6 @@ async function updateTable(oldname, newname) {
 
 
 module.exports = {initiateDemotable, 
+    updateTable,
     fetchDemotableFromDb,
     insertDemotable}

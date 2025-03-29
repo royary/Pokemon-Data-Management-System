@@ -1,8 +1,5 @@
 
 
-const form = document.getElementById('insertDemotable');
-const form2 = document.getElementById('resetDemotable');
-const form3 = document.getElementById('updateTable');
 
 
 async function fetchAndDisplayUsers() {
@@ -79,7 +76,14 @@ async function updateTable(event){
     const oldNameValue = document.getElementById('updateOldName').value;
     const newNameValue = document.getElementById('updateNewName').value;
     const response = await fetch('/update-table', {
-        method: 'PUT'
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            oldname:oldNameValue,
+            newname:newNameValue
+        })
     });
     const responseData = await response.json();
     if(responseData.success) {
@@ -95,19 +99,33 @@ async function updateTable(event){
 
 window.onload = function() {
     fetchAndDisplayUsers();
-    form2.addEventListener("click", resetDemotable);
-    form.addEventListener("submit", insertDemotable);
-    form3.addEventListener("click", updateTable)
+    console.log("I'm refreshing!!!")
+
 }
 
 
+const insertDemotableForm = document.getElementById('insertDemotable');
+const resetDemotableForm = document.getElementById('resetDemotable');
+const updateTableForm = document.getElementById('updateTable');
 
+resetDemotableForm.addEventListener("click", resetDemotable);
+insertDemotableForm.addEventListener("submit", insertDemotable);
+updateTableForm.addEventListener("submit", updateTable)
+
+const showUpdateFormButton = document.getElementById('showUpdateFormButton');
+showUpdateFormButton.addEventListener('click', function() {
+    if(updateTableForm.style.display === 'none') {
+        updateTableForm.style.display = 'block';
+    } else {
+        updateTableForm.style.display = 'none';
+    }
+})
 
 const showFormButton = document.getElementById('showFormButton');
 showFormButton.addEventListener('click', function() {
-    if(form.style.display === 'none') {
-        form.style.display = 'block';
+    if(insertDemotableForm.style.display === 'none') {
+        insertDemotableForm.style.display = 'block';
     } else {
-        form.style.display = 'none';
+        insertDemotableForm.style.display = 'none';
     }
 })
