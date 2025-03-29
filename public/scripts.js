@@ -1,6 +1,23 @@
 
 
 const form = document.getElementById('insertDemotable');
+const form2 = document.getElementById('resetDemotable');
+
+async function resetDemotable(){
+const response = await fetch('/initiate-demotable', {
+    method: 'POST'
+});
+const responseData = await response.json();
+
+if(responseData.success) {
+    const messageElement = document.getElementById('resetResultMsg');
+    messageElement.textContent = "table initiated successfully";
+} else {
+    alert("Error initiating Table");
+}
+}
+
+
 
 async function insertDemotable(event){
     event.preventDefault();
@@ -31,8 +48,9 @@ async function insertDemotable(event){
 }
 
 
-
+form2.addEventListener("click", resetDemotable);
 form.addEventListener("submit", insertDemotable);
+
 
 
 const showFormButton = document.getElementById('showFormButton');
