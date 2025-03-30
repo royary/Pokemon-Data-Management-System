@@ -238,6 +238,23 @@ async function updateTable(oldname, newname) {
     });
 }
 
+async function trainerSearch(trainerID) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT t.TrainerID, t.TrainerName, p.PokemonID, p.PokemonName
+FROM Trainer t
+JOIN PokemonTrains p ON t.TrainerID = p.TrainerID
+WHERE t.TrainerID=:trainerID`,
+            [trainerID],
+            { autoCommit: true }
+        );
+        console.log("AAAAAAAAAAAAAAAA", result, trainerID)
+        return result.rows;
+    }).catch(() => {
+        return false;
+    });
+}
+
 
 
 
@@ -249,5 +266,6 @@ module.exports = {
     getAverageAttackByType,
     getHighDefenseTable,
     strongTrainersTable,
-    allCategoriesTrainersTable
+    allCategoriesTrainersTable,
+    trainerSearch
 }

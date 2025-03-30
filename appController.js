@@ -73,6 +73,17 @@ router.put("/update-table", async (req, res) => {
     }
 });
 
+router.get("/trainer-search/:trainerId", async (req, res) => {
+    const trainerId = req.params.trainerId;
+    console.log(req.body, trainerId)
+    const results = await appService.trainerSearch(trainerId);
+    console.log("RESULTTTTT", results)
+    if(results) {
+        res.json({success: true, data: results});
+    }else {
+        res.status(500).json({success: false});
+    }
+});
 
 router.post("/insert-demotable", async (req, res) => {
     const {id, name, type, gender, ability, trainer} = req.body;
