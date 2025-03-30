@@ -227,7 +227,7 @@ async function insertDemotable(id, name, type, gender, ability, trainer) {
 async function updateTable(oldname, newname) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
-            `UPDATE PokemonTrains SET name=:newname where name=:oldname`,
+            `UPDATE PokemonTrains SET PokemonName=:newname where PokemonName=:oldname`,
             [newname, oldname],
             { autoCommit: true }
         );
