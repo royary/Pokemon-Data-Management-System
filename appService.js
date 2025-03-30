@@ -67,10 +67,70 @@ async function fetchDemotableFromDb() {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(`SELECT * FROM POKEMON`);
         return result.rows;
-    }).catch(()=>{
+    }).catch(() => {
         return [];
     });
 }
+
+//Query 7: Aggregation with GROUP BY
+//average attack per pokemon type
+async function getAverageAttackByType() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(`SELECT p.TypeName, AVG(s.Attack) AS AvgAttack
+FROM PokemonTrains p
+JOIN Shows sh ON p.PokemonID = sh.PokemonID
+JOIN Stats s ON sh.StatsID = s.StatsID
+GROUP BY p.TypeName
+`);
+        return result.rows;
+    }).catch((err) => {
+        console.log("Error getting average attack by type in DB connection", err);
+        return [];
+    });
+}
+
+//Query 8: Aggregation with HAVING
+//types with average defense greater than 10
+async function getHighDefenseTable() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(`SELECT p.TypeName, AVG(s.Defense) AS AvgDefense
+FROM PokemonTrains p
+JOIN Shows sh ON p.PokemonID = sh.PokemonID
+JOIN Stats s ON sh.StatsID = s.StatsID
+GROUP BY p.TypeName
+HAVING AVG(s.Defense) > 10
+`);
+        return result.rows;
+    }).catch((err) => {
+        console.log("Error getting average attack by type in DB connection", err);
+        return [];
+    });
+}
+
+//Query 9: Nested Aggregation with GROUP BY
+//find trainerName with Pokemon stats larger than average stats
+async function strongTrainersTable() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(`SELECT t.TrainerName, AVG(s.HP + s.Attack + s.Defense + s.SpecialAttack + s.SpecialDefense + s.Speed) AS AvgTotalStats
+FROM Trainer t
+JOIN PokemonTrains pt ON t.TrainerID = pt.TrainerID
+JOIN Shows sh ON pt.PokemonID = sh.PokemonID
+JOIN Stats s ON sh.StatsID = s.StatsID
+GROUP BY t.TrainerName
+HAVING AVG(s.HP + s.Attack + s.Defense + s.SpecialAttack + s.SpecialDefense + s.Speed) > (
+    SELECT AVG(HP + Attack + Defense + SpecialAttack + SpecialDefense + Speed)
+    FROM Stats
+)
+`);
+        return result.rows;
+    }).catch((err) => {
+        console.log("Error getting average attack by type in DB connection", err);
+        return [];
+    });
+}
+
+//Query 10: Division
+//trainers who own at least one pokemon from every category
 
 // async function initiateDemotable() {
 //     return await withOracleDB(async (connection) => {
@@ -96,27 +156,26 @@ async function fetchDemotableFromDb() {
 async function initiateDemotable() {
     return await withOracleDB(async (connection) => {
         try {
-            
             const createTableScript = fs.readFileSync(
-                path.join(__dirname, '/SQL/createTableScript.sql'), 
+                path.join(__dirname, '/SQL/createTableScript.sql'),
                 'utf8'
             );
-          
+
+            // Split by "END;\n/" for PL/SQL blocks, if any
             const statements = createTableScript.split("END;\n/").map(statement => statement.trim()).filter(statement => statement.length > 0);
-            
-            // Execute each statement in the script
+
             for (let statement of statements) {
-                if (statement.startsWith("--")) continue;
                 if (statement.startsWith("BEGIN")) {
-                    
-                    statement += "END;"
-                    console.log("stat:", statement)
+                    if (!statement.endsWith("END;")) {
+                        statement += "END;";
+                    }
+                    // console.log("stat:", statement);
                     await connection.execute(statement);
                 } else {
-                    substatements = statement.split(';').map(sub => sub.trim() + ";").filter(sub => sub.length > 0);
+                    const substatements = statement.split(';').map(sub => sub.trim()).filter(sub => sub.length > 0);
                     for (let sub of substatements) {
-                        console.log("sub:", sub)
-                        // await connection.execute(sub);
+                        // console.log("sub:", sub);
+                        await connection.execute(sub);
                     }
                 }
             }
@@ -132,13 +191,12 @@ async function initiateDemotable() {
         return false;
     });
 }
-
 async function insertDemotable(id, name) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
             `INSERT INTO POKEMON (id, name) VALUES (:id, :name)`,
             [id, name],
-            {autoCommit: true}
+            { autoCommit: true }
         );
         return result.rowsAffected && result.rowsAffected > 0;
     }).catch(() => {
@@ -163,7 +221,12 @@ async function updateTable(oldname, newname) {
 
 
 
-module.exports = {initiateDemotable, 
+module.exports = {
+    initiateDemotable,
     updateTable,
     fetchDemotableFromDb,
-    insertDemotable}
+    insertDemotable,
+    getAverageAttackByType,
+    getHighDefenseTable,
+    strongTrainersTable
+}

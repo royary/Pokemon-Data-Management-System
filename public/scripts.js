@@ -130,6 +130,109 @@ showUpdateFormButton.addEventListener('click', function() {
     }
 })
 
+const showAvgAttackButton = document.getElementById('showAvgAttackButton');
+showAvgAttackButton.addEventListener('click', async function(event) {
+    event.preventDefault();
+    const table = document.getElementById('avgAttackTable');
+    const tableBody = table.querySelector('tbody');
+    if(table.style.display === 'none'){
+    try {
+    const response = await fetch('/avgAttackTable', {
+        method: 'GET'
+    });
+    const data = await response.json();
+    if(data.success) {
+    tableBody.innerHTML = '';
+    data.data.forEach(([type, avgAttach])=> {
+        const tr = document.createElement('tr');
+        const typeCell = document.createElement('th');
+        const avgAttachCell = document.createElement('th');
+        typeCell.textContent = type;
+        avgAttachCell.textContent = avgAttach;
+        tr.appendChild(typeCell);
+        tr.appendChild(avgAttachCell);
+        tableBody.appendChild(tr);
+    });
+    table.style.display = 'table';
+    } 
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error fetching average attack data');
+    }
+} else {
+    table.style.display = 'none';
+}
+});
+
+
+const showHighDefenseButton = document.getElementById('showHighDefenseButton');
+showHighDefenseButton.addEventListener('click', async function(event) {
+    event.preventDefault();
+    const table = document.getElementById('highDefenseTable');
+    const tableBody = table.querySelector('tbody');
+    if(table.style.display === 'none'){
+    try {
+    const response = await fetch('/highDefenseTable', {
+        method: 'GET'
+    });
+    const data = await response.json();
+    if(data.success) {
+    tableBody.innerHTML = '';
+    data.data.forEach(([type, highDefense])=> {
+        const tr = document.createElement('tr');
+        const typeCell = document.createElement('th');
+        const highDefenseCell = document.createElement('th');
+        typeCell.textContent = type;
+        highDefenseCell.textContent = highDefense;
+        tr.appendChild(typeCell);
+        tr.appendChild(highDefenseCell);
+        tableBody.appendChild(tr);
+    });
+    table.style.display = 'table';
+    } 
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error fetching high defense data');
+    }
+} else {
+    table.style.display = 'none';
+}
+});
+
+const showStrongTrainersButton = document.getElementById('showStrongTrainersButton');
+showStrongTrainersButton.addEventListener('click', async function(event) {
+    event.preventDefault();
+    const table = document.getElementById('strongTrainersTable');
+    const tableBody = table.querySelector('tbody');
+    if(table.style.display === 'none'){
+    try {
+    const response = await fetch('/strongTrainersTable', {
+        method: 'GET'
+    });
+    const data = await response.json();
+    if(data.success) {
+    tableBody.innerHTML = '';
+    data.data.forEach(([name, strongTrainer])=> {
+        const tr = document.createElement('tr');
+        const nameCell = document.createElement('th');
+        const strongTrainerCell = document.createElement('th');
+        nameCell.textContent = name;
+        strongTrainerCell.textContent = strongTrainer;
+        tr.appendChild(nameCell);
+        tr.appendChild(strongTrainerCell);
+        tableBody.appendChild(tr);
+    });
+    table.style.display = 'table';
+    } 
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error fetching strong Trainers data');
+    }
+} else {
+    table.style.display = 'none';
+}
+});
+
 const showFormButton = document.getElementById('showFormButton');
 showFormButton.addEventListener('click', function() {
     if(insertDemotableForm.style.display === 'none') {

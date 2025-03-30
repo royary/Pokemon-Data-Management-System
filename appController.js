@@ -8,6 +8,40 @@ router.get('/viewTable', async(req, res) => {
     res.json({data: tableContent});
 });
 
+
+
+router.get('/avgAttackTable', async(req, res) => {
+    const tableContent = await appService.getAverageAttackByType();
+    if(tableContent) {
+        console.log(tableContent);
+        res.json({success : true, data: tableContent});
+    } else {
+        res.status(500).json({success:false});
+    }
+});
+
+
+router.get('/highDefenseTable', async(req, res) => {
+    const tableContent = await appService.getHighDefenseTable();
+    if(tableContent) {
+        console.log(tableContent);
+        res.json({success : true, data: tableContent});
+    } else {
+        res.status(500).json({success:false});
+    }
+});
+
+router.get('/strongTrainersTable', async(req, res) => {
+    const tableContent = await appService.strongTrainersTable();
+    if(tableContent) {
+        console.log(tableContent);
+        res.json({success : true, data: tableContent});
+    } else {
+        res.status(500).json({success:false});
+    }
+});
+
+
 router.post("/initiate-demotable", async (req, res) => {
     const initiateResult = await appService.initiateDemotable();
     if(initiateResult) {
