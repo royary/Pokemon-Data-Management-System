@@ -130,6 +130,42 @@ showUpdateFormButton.addEventListener('click', function() {
     }
 })
 
+const showAvgAttackButton = document.getElementById('showAvgAttackButton');
+showAvgAttackButton.addEventListener('click', async function(event) {
+    event.preventDefault();
+    const table = document.getElementById('avgAttackTable');
+    const tableBody = table.querySelector('tbody');
+    try {
+    const response = await fetch('/avgAttackTable', {
+        method: 'GET'
+    });
+    console.log('Response status:', response.status);
+    console.log(response)
+    const data = await response.json();
+    console.log(data)
+    if(data.success) {
+    tableBody.innerHTML = '';
+ 
+    data.data.forEach(([type, avgAttach])=> {
+        const tr = document.createElement('tr');
+        const typeCell = document.createElement('th');
+        const avgAttachCell = document.createElement('th');
+        console.log("HIIIII")
+        console.log("TR", tr)
+        typeCell.textContent = type;
+        avgAttachCell.textContent = avgAttach;
+        tr.appendChild(typeCell);
+        tr.appendChild(avgAttachCell);
+        tableBody.appendChild(tr);
+    });
+    table.style.display = 'table';
+    } 
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error fetching average attack data');
+    }
+});
+
 const showFormButton = document.getElementById('showFormButton');
 showFormButton.addEventListener('click', function() {
     if(insertDemotableForm.style.display === 'none') {

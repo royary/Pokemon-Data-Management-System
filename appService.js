@@ -67,7 +67,22 @@ async function fetchDemotableFromDb() {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(`SELECT * FROM POKEMON`);
         return result.rows;
-    }).catch(()=>{
+    }).catch(() => {
+        return [];
+    });
+}
+
+async function getAverageAttackByType() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(`SELECT p.TypeName, AVG(s.Attack) AS AvgAttack
+FROM PokemonTrains p
+JOIN Shows sh ON p.PokemonID = sh.PokemonID
+JOIN Stats s ON sh.StatsID = s.StatsID
+GROUP BY p.TypeName
+`);
+        return result.rows;
+    }).catch((err) => {
+        console.log("Error getting average attack by type in DB connection", err);
         return [];
     });
 }
@@ -96,27 +111,26 @@ async function fetchDemotableFromDb() {
 async function initiateDemotable() {
     return await withOracleDB(async (connection) => {
         try {
-            
             const createTableScript = fs.readFileSync(
-                path.join(__dirname, '/SQL/createTableScript.sql'), 
+                path.join(__dirname, '/SQL/createTableScript.sql'),
                 'utf8'
             );
-          
+
+            // Split by "END;\n/" for PL/SQL blocks, if any
             const statements = createTableScript.split("END;\n/").map(statement => statement.trim()).filter(statement => statement.length > 0);
-            
-            // Execute each statement in the script
+
             for (let statement of statements) {
-                if (statement.startsWith("--")) continue;
                 if (statement.startsWith("BEGIN")) {
-                    
-                    statement += "END;"
-                    console.log("stat:", statement)
+                    if (!statement.endsWith("END;")) {
+                        statement += "END;";
+                    }
+                    // console.log("stat:", statement);
                     await connection.execute(statement);
                 } else {
-                    substatements = statement.split(';').map(sub => sub.trim() + ";").filter(sub => sub.length > 0);
+                    const substatements = statement.split(';').map(sub => sub.trim()).filter(sub => sub.length > 0);
                     for (let sub of substatements) {
-                        console.log("sub:", sub)
-                        // await connection.execute(sub);
+                        // console.log("sub:", sub);
+                        await connection.execute(sub);
                     }
                 }
             }
@@ -132,13 +146,12 @@ async function initiateDemotable() {
         return false;
     });
 }
-
 async function insertDemotable(id, name) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
             `INSERT INTO POKEMON (id, name) VALUES (:id, :name)`,
             [id, name],
-            {autoCommit: true}
+            { autoCommit: true }
         );
         return result.rowsAffected && result.rowsAffected > 0;
     }).catch(() => {
@@ -163,7 +176,10 @@ async function updateTable(oldname, newname) {
 
 
 
-module.exports = {initiateDemotable, 
+module.exports = {
+    initiateDemotable,
     updateTable,
     fetchDemotableFromDb,
-    insertDemotable}
+    insertDemotable,
+    getAverageAttackByType
+}

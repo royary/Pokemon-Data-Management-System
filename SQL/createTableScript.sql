@@ -1,4 +1,4 @@
--- Drop tables with CASCADE CONSTRAINTS to ignore non-existent tables
+
 BEGIN
    EXECUTE IMMEDIATE 'DROP TABLE BelongsTo CASCADE CONSTRAINTS';
 EXCEPTION WHEN OTHERS THEN NULL; END;
@@ -24,12 +24,12 @@ BEGIN
 EXCEPTION WHEN OTHERS THEN NULL; END;
 /
 BEGIN
-   EXECUTE IMMEDIATE 'DROP TABLE Type CASCADE CONSTRAINTS';
+   EXECUTE IMMEDIATE 'DROP TABLE PokemonType CASCADE CONSTRAINTS';
 EXCEPTION WHEN OTHERS THEN NULL; END;
 /
 
 
-CREATE TABLE Type (
+CREATE TABLE PokemonType (
     TypeName VARCHAR(20) PRIMARY KEY,
     Weakness VARCHAR(20),
     Resistance VARCHAR(20),
@@ -38,11 +38,11 @@ CREATE TABLE Type (
 
 
 INSERT ALL
-    INTO Type (TypeName, Weakness, Resistance, Strength) VALUES ('Grass', 'Fire', 'Water', 'Rock')
-    INTO Type (TypeName, Weakness, Resistance, Strength) VALUES ('Fire', 'Water', 'Steel', 'Bug')
-    INTO Type (TypeName, Weakness, Resistance, Strength) VALUES ('Water', 'Electric', 'Ice', 'Fire')
-    INTO Type (TypeName, Weakness, Resistance, Strength) VALUES ('Electric', 'Ground', 'Flying', 'Water')
-    INTO Type (TypeName, Weakness, Resistance, Strength) VALUES ('Fairy', 'Poison', 'Fighting', 'Dragon')
+    INTO PokemonType (TypeName, Weakness, Resistance, Strength) VALUES ('Grass', 'Fire', 'Water', 'Rock')
+    INTO PokemonType (TypeName, Weakness, Resistance, Strength) VALUES ('Fire', 'Water', 'Steel', 'Bug')
+    INTO PokemonType (TypeName, Weakness, Resistance, Strength) VALUES ('Water', 'Electric', 'Ice', 'Fire')
+    INTO PokemonType (TypeName, Weakness, Resistance, Strength) VALUES ('Electric', 'Ground', 'Flying', 'Water')
+    INTO PokemonType (TypeName, Weakness, Resistance, Strength) VALUES ('Fairy', 'Poison', 'Fighting', 'Dragon')
 SELECT * FROM dual;
 
 
@@ -53,7 +53,7 @@ CREATE TABLE PokemonTrains (
     PokemonGender VARCHAR(20),
     Ability VARCHAR(20),
     TrainerID VARCHAR(20) NOT NULL,
-    FOREIGN KEY (TypeName) REFERENCES Type(TypeName) ON DELETE CASCADE
+    FOREIGN KEY (TypeName) REFERENCES PokemonType(TypeName) ON DELETE CASCADE
 );
 
 
