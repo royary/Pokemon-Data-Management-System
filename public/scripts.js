@@ -1,5 +1,11 @@
 
-
+function showTemporaryMessage(elementId, message, duration = 2000) {
+    const messageElement = document.getElementById(elementId);
+    messageElement.textContent = message;
+    setTimeout(() => {
+        messageElement.textContent = '';
+    }, duration);
+}
 
 
 async function fetchAndDisplayUsers() {
@@ -32,11 +38,10 @@ const response = await fetch('/initiate-demotable', {
 const responseData = await response.json();
 
 if(responseData.success) {
-    const messageElement = document.getElementById('resetResultMsg');
-    messageElement.textContent = "table initiated successfully";
+    showTemporaryMessage('resetResultMsg', "table initiated successfully");
     fetchAndDisplayUsers();
 } else {
-    alert("Error initiating Table");
+    showTemporaryMessage('resetResultMsg', "Error initiating Table");
 }
 }
 
@@ -58,10 +63,10 @@ async function deleteIDTable(event){
     const messageElement = document.getElementById('deleteResultMsg');
 
     if(responseData.success) {
-        messageElement.textContent = "Delete Pokemon by ID successfully";
+        showTemporaryMessage('deleteResultMsg', "Delete Pokemon by ID successfully");
         fetchAndDisplayUsers();
     }else {
-        messageElement.textContent = "Error Delete Pokemon by ID";
+        showTemporaryMessage('deleteResultMsg', "Error Delete Pokemon by ID");
     }
 
 }
@@ -96,10 +101,10 @@ async function insertDemotable(event){
     const messageElement = document.getElementById('insertResultMsg');
 
     if(responseData.success) {
-        messageElement.textContent = "Data inserted successfully";
+        showTemporaryMessage('insertResultMsg', "Insert Pokemon successfully");
         fetchAndDisplayUsers();
     }else {
-        messageElement.textContent = "Error inserting Data";
+        showTemporaryMessage('insertResultMsg', "Error inserting Pokemon");
     }
 
 }
@@ -120,11 +125,10 @@ async function updateTable(event){
     });
     const responseData = await response.json();
     if(responseData.success) {
-        const messageElement = document.getElementById('updateResultMsg');
-        messageElement.textContent = "table update successfully";
+        showTemporaryMessage('updateResultMsg', "Update Pokemon successfully");
         fetchAndDisplayUsers();
     } else {
-        alert("Error update Table");
+        showTemporaryMessage('updateResultMsg', "Error updating Pokemon");
     }
 
 }
