@@ -40,6 +40,31 @@ if(responseData.success) {
 }
 }
 
+async function deleteIDTable(event){
+    event.preventDefault();
+    const deleteValue = document.getElementById('deleteId').value;
+    const response = await fetch('/deleteId', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            id: deleteValue
+        })
+    });
+    console.log(response);
+
+    const responseData = await response.json();
+    const messageElement = document.getElementById('deleteResultMsg');
+
+    if(responseData.success) {
+        messageElement.textContent = "Delete Pokemon by ID successfully";
+        fetchAndDisplayUsers();
+    }else {
+        messageElement.textContent = "Error Delete Pokemon by ID";
+    }
+
+}
 
 
 async function insertDemotable(event){
@@ -122,11 +147,13 @@ window.onload = function() {
 
 
 const insertDemotableForm = document.getElementById('insertDemotable');
+const deleteTableID = document.getElementById('deleteTable');
 const resetDemotableForm = document.getElementById('resetDemotable');
 const updateTableForm = document.getElementById('updateTable');
 
 resetDemotableForm.addEventListener("click", resetDemotable);
 insertDemotableForm.addEventListener("submit", insertDemotable);
+deleteTableID.addEventListener("submit", deleteIDTable);
 updateTableForm.addEventListener("submit", updateTable)
 
 const showUpdateFormButton = document.getElementById('showUpdateFormButton');
@@ -278,5 +305,15 @@ showFormButton.addEventListener('click', function() {
         insertDemotableForm.style.display = 'block';
     } else {
         insertDemotableForm.style.display = 'none';
+    }
+})
+
+
+const deleteButton = document.getElementById('deleteButton');
+deleteButton.addEventListener('click', function() {
+    if(deleteTableID.style.display === 'none') {
+        deleteTableID.style.display = 'block';
+    } else {
+        deleteTableID.style.display = 'none';
     }
 })

@@ -97,6 +97,18 @@ router.post("/insert-demotable", async (req, res) => {
    
 });
 
+router.post("/deleteId", async (req, res) => {
+    const {id} = req.body;
+    const insertResult = await appService.deleteID(id);
+    if(insertResult) {
+        res.json({success: true});
+    }else {
+        res.status(500).json({success: false});
+    }
+   
+});
+
+
 router.post("/filter", async (req, res) => {
     const {attribute, whereClause} = req.body;
     const filterResult = await appService.filterTable(attribute, whereClause);

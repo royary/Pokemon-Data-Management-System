@@ -224,6 +224,20 @@ async function insertDemotable(id, name, type, gender, ability, trainer) {
     });
 }
 
+async function deleteID(id) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `DELETE FROM PokemonTrains WHERE PokemonID = :id`,
+            [id],
+            { autoCommit: true }
+        );
+        return result.rowsAffected && result.rowsAffected > 0;
+    }).catch(() => {
+        return false;
+    });
+}
+
+
 function buildSelectClause(attributes) {
     if (!attributes || attributes.length === 0) {
         return '*';
@@ -294,5 +308,6 @@ module.exports = {
     allCategoriesTrainersTable,
     trainerSearch,
     filterTable,
-    buildSelectClause
+    buildSelectClause,
+    deleteID
 }
