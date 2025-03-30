@@ -97,5 +97,15 @@ router.post("/insert-demotable", async (req, res) => {
    
 });
 
+router.post("/filter", async (req, res) => {
+    const {attribute, whereClause} = req.body;
+    const filterResult = await appService.filterTable(attribute, whereClause);
+    if(filterResult) {
+        res.json({success: true});
+    }else {
+        res.status(500).json({success: false});
+    }
+   
+});
 
 module.exports = router;

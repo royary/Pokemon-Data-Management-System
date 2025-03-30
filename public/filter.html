@@ -44,12 +44,12 @@
     <div class="container">
         <div class="card">
             <h2>Filter Options</h2>
-            
+            <!-- Selection Implementation-->
             <div id="filter-container">
                 <!-- Condition Group 1 -->
                 <div class="condition-group" id="group-1">
                     <h3>Condition Group 1</h3>
-                    <!-- Projection Implementation -->
+            
                     <div class="condition">
                         <select class="attribute-select">
                             <option value="TypeName">TypeName</option>
@@ -69,21 +69,16 @@
 
                         <input type="text" class="value-input" placeholder="Enter value">
 
-                        <select class="logic-select">
-                            <option value="AND">AND</option>
-                            <option value="OR">OR</option>
-                        </select>
-
                         <button class="smallbutton" onclick="removeCondition(this)">Remove</button>
                     </div>
                 </div>
 
-                <div class="group-operator">
+                <!-- <div class="group-operator">
                     <select class="group-logic-select">
                         <option value="OR">OR</option>
                         <option value="AND">AND</option>
                     </select>
-                </div>
+                </div> -->
 
                 <!-- Add Group Button -->
                 <div class="add-buttons">
@@ -97,6 +92,7 @@
         </div>
     </div>
 
+    <!-- Projection Implementation -->
     <div class="container">
         <div class="card">
     <div class="projection-controls" id="projection-controls">

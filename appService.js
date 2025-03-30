@@ -224,6 +224,8 @@ async function insertDemotable(id, name, type, gender, ability, trainer) {
     });
 }
 
+
+
 async function updateTable(oldname, newname) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
@@ -267,5 +269,6 @@ module.exports = {
     getHighDefenseTable,
     strongTrainersTable,
     allCategoriesTrainersTable,
-    trainerSearch
+    trainerSearch,
+    filterTable
 }
