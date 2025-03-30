@@ -31,6 +31,17 @@ router.get('/highDefenseTable', async(req, res) => {
     }
 });
 
+router.get('/strongTrainersTable', async(req, res) => {
+    const tableContent = await appService.strongTrainersTable();
+    if(tableContent) {
+        console.log(tableContent);
+        res.json({success : true, data: tableContent});
+    } else {
+        res.status(500).json({success:false});
+    }
+});
+
+
 router.post("/initiate-demotable", async (req, res) => {
     const initiateResult = await appService.initiateDemotable();
     if(initiateResult) {

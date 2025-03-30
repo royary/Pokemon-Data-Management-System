@@ -72,6 +72,8 @@ async function fetchDemotableFromDb() {
     });
 }
 
+//Query 7: Aggregation with GROUP BY
+//average attack per pokemon type
 async function getAverageAttackByType() {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(`SELECT p.TypeName, AVG(s.Attack) AS AvgAttack
@@ -87,6 +89,8 @@ GROUP BY p.TypeName
     });
 }
 
+//Query 8: Aggregation with HAVING
+//types with average defense greater than 10
 async function getHighDefenseTable() {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(`SELECT p.TypeName, AVG(s.Defense) AS AvgDefense
@@ -102,6 +106,32 @@ HAVING AVG(s.Defense) > 10
         return [];
     });
 }
+
+//Query 9: Nested Aggregation with GROUP BY
+//find trainerName with Pokemon stats larger than average stats
+async function strongTrainersTable() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(`SELECT t.TrainerName, AVG(s.HP + s.Attack + s.Defense + s.SpecialAttack + s.SpecialDefense + s.Speed) AS AvgTotalStats
+FROM Trainer t
+JOIN PokemonTrains pt ON t.TrainerID = pt.TrainerID
+JOIN Shows sh ON pt.PokemonID = sh.PokemonID
+JOIN Stats s ON sh.StatsID = s.StatsID
+GROUP BY t.TrainerName
+HAVING AVG(s.HP + s.Attack + s.Defense + s.SpecialAttack + s.SpecialDefense + s.Speed) > (
+    SELECT AVG(HP + Attack + Defense + SpecialAttack + SpecialDefense + Speed)
+    FROM Stats
+)
+`);
+        return result.rows;
+    }).catch((err) => {
+        console.log("Error getting average attack by type in DB connection", err);
+        return [];
+    });
+}
+
+//Query 10: Division
+//trainers who own at least one pokemon from every category
+
 // async function initiateDemotable() {
 //     return await withOracleDB(async (connection) => {
 //         try {
@@ -197,5 +227,6 @@ module.exports = {
     fetchDemotableFromDb,
     insertDemotable,
     getAverageAttackByType,
-    getHighDefenseTable
+    getHighDefenseTable,
+    strongTrainersTable
 }

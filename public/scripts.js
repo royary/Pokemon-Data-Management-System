@@ -199,6 +199,40 @@ showHighDefenseButton.addEventListener('click', async function(event) {
 }
 });
 
+const showStrongTrainersButton = document.getElementById('showStrongTrainersButton');
+showStrongTrainersButton.addEventListener('click', async function(event) {
+    event.preventDefault();
+    const table = document.getElementById('strongTrainersTable');
+    const tableBody = table.querySelector('tbody');
+    if(table.style.display === 'none'){
+    try {
+    const response = await fetch('/strongTrainersTable', {
+        method: 'GET'
+    });
+    const data = await response.json();
+    if(data.success) {
+    tableBody.innerHTML = '';
+    data.data.forEach(([name, strongTrainer])=> {
+        const tr = document.createElement('tr');
+        const nameCell = document.createElement('th');
+        const strongTrainerCell = document.createElement('th');
+        nameCell.textContent = name;
+        strongTrainerCell.textContent = strongTrainer;
+        tr.appendChild(nameCell);
+        tr.appendChild(strongTrainerCell);
+        tableBody.appendChild(tr);
+    });
+    table.style.display = 'table';
+    } 
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error fetching strong Trainers data');
+    }
+} else {
+    table.style.display = 'none';
+}
+});
+
 const showFormButton = document.getElementById('showFormButton');
 showFormButton.addEventListener('click', function() {
     if(insertDemotableForm.style.display === 'none') {
