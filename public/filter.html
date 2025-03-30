@@ -99,7 +99,6 @@
         <h3>Select Attributes to Display:</h3>
         <div>
             <label><input type="checkbox" name="projectionAttributes" value="p.PokemonID" checked> PokemonID</label>
-            <label><input type="checkbox" name="projectionAttributes" value="p.PokemonName" checked> PokemonName</label>
             <label><input type="checkbox" name="projectionAttributes" value="t.TypeName" checked> TypeName</label>
             <label><input type="checkbox" name="projectionAttributes" value="p.Ability" checked> Ability</label>
             <label><input type="checkbox" name="projectionAttributes" value="t.Weakness" checked> Weakness</label>
@@ -108,22 +107,10 @@
         </div>
         <button class="button" onclick="performSearch()">Apply</button>
         <button class="button" onclick="window.location.href='/'">Back to Home</button>
-                    <!-- Results Table -->
-                    <div style="margin-top: 20px;">
-                        <table id="resultsTable" border="1" style="display: none;">
-                            <thead>
-                                <tr>
-                                    <!-- <th>TrainerID</th>
-                                    <th>TrainerName</th>
-                                    <th>PokemonID</th>
-                                    <th>PokemonName</th> -->
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div id="searchResultMsg"></div>
+        <div style="margin-top: 20px;">
+            <div id="resultsContainer" style="display: none; white-space: pre-line; font-family: monospace;"></div>
+        </div>
+         <div id="searchResultMsg"></div>
     </div>
 </div>
 <div>

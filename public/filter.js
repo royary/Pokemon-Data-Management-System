@@ -122,8 +122,22 @@ function getProjectionAttribute(){
     return Array.from(checkboxes).map(cb => cb.value);
 }
 
-function displayResult(responseData, projectionAttribute){
-return [];
+function displayResult(data, projectionAttribute){
+const resultsContainer = document.getElementById('resultsContainer');
+if(!data || data.length === 0) {
+    resultsContainer.textContent = 'No results found.';
+    resultsContainer.style.display = 'block';
+    return;
+}
+const headerNames = projectionAttribute.map(attribute => attribute.split('.')[1]);
+let resultText = headerNames.join(' | ') + '\n';
+resultText += '-'.repeat(resultText.length) + '\n';
+
+data.forEach(row => {
+    resultText += row.join(' | ') + '\n';
+});
+resultsContainer.textContent = resultText;
+resultsContainer.style.display = 'block';
 }
 
 async function performSearch(){
@@ -147,7 +161,7 @@ async function performSearch(){
 
         const responseData = await response.json();
         if(responseData.success && responseData.data.length > 0) {
-            displayResults(responseData.data, projectionAttribute);
+            displayResult(responseData.data, projectionAttribute);
         }else {
            alert('Error performing search. Please try again.')
         }  
