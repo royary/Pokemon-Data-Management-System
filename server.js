@@ -19,7 +19,6 @@ app.listen(PORT, () => {
 })
 
 
-app.post('/insert-demotable', appController.insertDemotable);
 
 
 
