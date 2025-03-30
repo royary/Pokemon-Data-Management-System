@@ -1,5 +1,11 @@
 
-
+function showTemporaryMessage(elementId, message, duration = 2000) {
+    const messageElement = document.getElementById(elementId);
+    messageElement.textContent = message;
+    setTimeout(() => {
+        messageElement.textContent = '';
+    }, duration);
+}
 
 
 async function fetchAndDisplayUsers() {
@@ -32,20 +38,48 @@ const response = await fetch('/initiate-demotable', {
 const responseData = await response.json();
 
 if(responseData.success) {
-    const messageElement = document.getElementById('resetResultMsg');
-    messageElement.textContent = "table initiated successfully";
+    showTemporaryMessage('resetResultMsg', "table initiated successfully");
     fetchAndDisplayUsers();
 } else {
-    alert("Error initiating Table");
+    showTemporaryMessage('resetResultMsg', "Error initiating Table");
 }
 }
 
+async function deleteIDTable(event){
+    event.preventDefault();
+    const deleteValue = document.getElementById('deleteId').value;
+    const response = await fetch('/deleteId', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            id: deleteValue
+        })
+    });
+    console.log(response);
+
+    const responseData = await response.json();
+    const messageElement = document.getElementById('deleteResultMsg');
+
+    if(responseData.success) {
+        showTemporaryMessage('deleteResultMsg', "Delete Pokemon by ID successfully");
+        fetchAndDisplayUsers();
+    }else {
+        showTemporaryMessage('deleteResultMsg', "Error Delete Pokemon by ID");
+    }
+
+}
 
 
 async function insertDemotable(event){
     event.preventDefault();
     const idValue = document.getElementById('insertId').value;
     const nameValue = document.getElementById('insertName').value;
+    const typeValue = document.getElementById('insertType').value;
+    const genderValue = document.getElementById('insertGender').value;
+    const abilityValue = document.getElementById('insertAbility').value;
+    const trainerValue = document.getElementById('insertTrainer').value;
     console.log("I'm at script.js");
     const response = await fetch('/insert-demotable', {
         method: 'POST',
@@ -54,7 +88,11 @@ async function insertDemotable(event){
         },
         body: JSON.stringify({
             id: idValue,
-            name: nameValue
+            name: nameValue,
+            type: typeValue,
+            gender: genderValue,
+            ability: abilityValue,
+            trainer: trainerValue
         })
     });
     console.log(response);
@@ -63,10 +101,10 @@ async function insertDemotable(event){
     const messageElement = document.getElementById('insertResultMsg');
 
     if(responseData.success) {
-        messageElement.textContent = "Data inserted successfully";
+        showTemporaryMessage('insertResultMsg', "Insert Pokemon successfully");
         fetchAndDisplayUsers();
     }else {
-        messageElement.textContent = "Error inserting Data";
+        showTemporaryMessage('insertResultMsg', "Error inserting Pokemon");
     }
 
 }
@@ -87,11 +125,10 @@ async function updateTable(event){
     });
     const responseData = await response.json();
     if(responseData.success) {
-        const messageElement = document.getElementById('updateResultMsg');
-        messageElement.textContent = "table update successfully";
+        showTemporaryMessage('updateResultMsg', "Update Pokemon successfully");
         fetchAndDisplayUsers();
     } else {
-        alert("Error update Table");
+        showTemporaryMessage('updateResultMsg', "Error updating Pokemon");
     }
 
 }
@@ -114,11 +151,13 @@ window.onload = function() {
 
 
 const insertDemotableForm = document.getElementById('insertDemotable');
+const deleteTableID = document.getElementById('deleteTable');
 const resetDemotableForm = document.getElementById('resetDemotable');
 const updateTableForm = document.getElementById('updateTable');
 
 resetDemotableForm.addEventListener("click", resetDemotable);
 insertDemotableForm.addEventListener("submit", insertDemotable);
+deleteTableID.addEventListener("submit", deleteIDTable);
 updateTableForm.addEventListener("submit", updateTable)
 
 const showUpdateFormButton = document.getElementById('showUpdateFormButton');
@@ -270,5 +309,15 @@ showFormButton.addEventListener('click', function() {
         insertDemotableForm.style.display = 'block';
     } else {
         insertDemotableForm.style.display = 'none';
+    }
+})
+
+
+const deleteButton = document.getElementById('deleteButton');
+deleteButton.addEventListener('click', function() {
+    if(deleteTableID.style.display === 'none') {
+        deleteTableID.style.display = 'block';
+    } else {
+        deleteTableID.style.display = 'none';
     }
 })

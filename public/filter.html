@@ -44,18 +44,18 @@
     <div class="container">
         <div class="card">
             <h2>Filter Options</h2>
-            
+            <!-- Selection Implementation-->
             <div id="filter-container">
                 <!-- Condition Group 1 -->
                 <div class="condition-group" id="group-1">
                     <h3>Condition Group 1</h3>
-                    
+            
                     <div class="condition">
                         <select class="attribute-select">
-                            <option value="TypeName">TypeName</option>
-                            <option value="Ability">Ability</option>
-                            <option value="Weakness">Weakness</option>
-                            <option value="Strength">Strength</option>
+                            <option value="t.TypeName">TypeName</option>
+                            <option value="p.Ability">Ability</option>
+                            <option value="t.Weakness">Weakness</option>
+                            <option value="t.Strength">Strength</option>
                         </select>
 
                         <select class="operator-select">
@@ -69,48 +69,48 @@
 
                         <input type="text" class="value-input" placeholder="Enter value">
 
-                        <select class="logic-select">
-                            <option value="AND">AND</option>
-                            <option value="OR">OR</option>
-                        </select>
-
                         <button class="smallbutton" onclick="removeCondition(this)">Remove</button>
                     </div>
                 </div>
 
-                <div class="group-operator">
+                <!-- <div class="group-operator">
                     <select class="group-logic-select">
                         <option value="OR">OR</option>
                         <option value="AND">AND</option>
                     </select>
-                </div>
+                </div> -->
 
                 <!-- Add Group Button -->
                 <div class="add-buttons">
                     <button class="button" onclick="addConditionGroup()">+ Add New Condition Group</button>
                 </div>
 
-                <!-- Search Button -->
-                <button class="button" onclick="performSearch()">Search</button>
-                <button class="button" onclick="window.location.href='/'">Back to Home</button>
+                <!-- Search Button
+                <button class="button" onclick="performSearch()">Search</button> -->
+
             </div>
         </div>
     </div>
 
+    <!-- Projection Implementation -->
     <div class="container">
         <div class="card">
-    <div class="projection-controls" id="projection-controls">
+     <div class="projection-controls" id="projection-controls">
         <h3>Select Attributes to Display:</h3>
         <div>
-            <label><input type="checkbox" name="projectionAttributes" value="PokemonID" checked> PokemonID</label>
-            <label><input type="checkbox" name="projectionAttributes" value="PokemonName" checked> PokemonName</label>
-            <label><input type="checkbox" name="projectionAttributes" value="TypeName" checked> TypeName</label>
-            <label><input type="checkbox" name="projectionAttributes" value="Ability" checked> Ability</label>
-            <label><input type="checkbox" name="projectionAttributes" value="Weakness" checked> Weakness</label>
-            <label><input type="checkbox" name="projectionAttributes" value="Resistance" checked> Resistance</label>
-            <label><input type="checkbox" name="projectionAttributes" value="Strength" checked> Strength</label>
+            <label><input type="checkbox" name="projectionAttributes" value="p.PokemonID" checked> PokemonID</label>
+            <label><input type="checkbox" name="projectionAttributes" value="t.TypeName" checked> TypeName</label>
+            <label><input type="checkbox" name="projectionAttributes" value="p.Ability" checked> Ability</label>
+            <label><input type="checkbox" name="projectionAttributes" value="t.Weakness" checked> Weakness</label>
+            <label><input type="checkbox" name="projectionAttributes" value="t.Resistance" checked> Resistance</label>
+            <label><input type="checkbox" name="projectionAttributes" value="t.Strength" checked> Strength</label>
         </div>
-        <button class="button" onclick="applyProjection()">Apply</button>
+        <button class="button" onclick="performSearch()">Apply</button>
+        <button class="button" onclick="window.location.href='/'">Back to Home</button>
+        <div style="margin-top: 20px;">
+            <div id="resultsContainer" style="display: none; white-space: pre-line; font-family: monospace;"></div>
+        </div>
+         <div id="searchResultMsg"></div>
     </div>
 </div>
 <div>

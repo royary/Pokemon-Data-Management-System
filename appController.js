@@ -73,11 +73,22 @@ router.put("/update-table", async (req, res) => {
     }
 });
 
+router.get("/trainer-search/:trainerId", async (req, res) => {
+    const trainerId = req.params.trainerId;
+    console.log(req.body, trainerId)
+    const results = await appService.trainerSearch(trainerId);
+    console.log("RESULTTTTT", results)
+    if(results) {
+        res.json({success: true, data: results});
+    }else {
+        res.status(500).json({success: false});
+    }
+});
 
 router.post("/insert-demotable", async (req, res) => {
-    const {id, name} = req.body;
+    const {id, name, type, gender, ability, trainer} = req.body;
     console.log("I'm here");
-    const insertResult = await appService.insertDemotable(id, name);
+    const insertResult = await appService.insertDemotable(id, name, type, gender, ability, trainer);
     if(insertResult) {
         res.json({success: true});
     }else {
@@ -86,5 +97,27 @@ router.post("/insert-demotable", async (req, res) => {
    
 });
 
+router.post("/deleteId", async (req, res) => {
+    const {id} = req.body;
+    const insertResult = await appService.deleteID(id);
+    if(insertResult) {
+        res.json({success: true});
+    }else {
+        res.status(500).json({success: false});
+    }
+   
+});
+
+
+router.post("/filter", async (req, res) => {
+    const {attribute, whereClause} = req.body;
+    const filterResult = await appService.filterTable(attribute, whereClause);
+    if(filterResult) {
+        res.json({success: true, data: filterResult});
+    }else {
+        res.status(500).json({success: false});
+    }
+   
+});
 
 module.exports = router;

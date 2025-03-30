@@ -211,11 +211,11 @@ async function initiateDemotable() {
         return false;
     });
 }
-async function insertDemotable(id, name) {
+async function insertDemotable(id, name, type, gender, ability, trainer) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
-            `INSERT INTO PokemonTrains (id, name) VALUES (:id, :name)`,
-            [id, name],
+            `INSERT INTO PokemonTrains (PokemonID, PokemonName, TypeName, PokemonGender, Ability, TrainerID) VALUES (:id, :name, :type, :gender, :ability, :trainer)`,
+            [id, name, type, gender, ability, trainer],
             { autoCommit: true }
         );
         return result.rowsAffected && result.rowsAffected > 0;
@@ -224,15 +224,71 @@ async function insertDemotable(id, name) {
     });
 }
 
+async function deleteID(id) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `DELETE FROM PokemonTrains WHERE PokemonID = :id`,
+            [id],
+            { autoCommit: true }
+        );
+        return result.rowsAffected && result.rowsAffected > 0;
+    }).catch(() => {
+        return false;
+    });
+}
+
+
+function buildSelectClause(attributes) {
+    if (!attributes || attributes.length === 0) {
+        return '*';
+    }
+    return attributes.join(', ');
+}
+
+
+
+async function filterTable(attribute, whereClause) {
+    const selectClause = buildSelectClause(attribute);
+    const query = `SELECT ${selectClause} FROM PokemonTrains p JOIN PokemonType t ON p.TypeName = t.TypeName
+    WHERE ${whereClause}`;
+    console.log(query)
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            query
+        );
+        console.log(result.rows)
+        return result.rows;
+    }).catch(() => {
+        return false;
+    });
+}
+
 async function updateTable(oldname, newname) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
-            `UPDATE PokemonTrains SET name=:newname where name=:oldname`,
+            `UPDATE PokemonTrains SET PokemonName=:newname where PokemonName=:oldname`,
             [newname, oldname],
             { autoCommit: true }
         );
         console.log(result, oldname, newname)
         return result.rowsAffected && result.rowsAffected > 0;
+    }).catch(() => {
+        return false;
+    });
+}
+
+async function trainerSearch(trainerID) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT t.TrainerID, t.TrainerName, p.PokemonID, p.PokemonName
+FROM Trainer t
+JOIN PokemonTrains p ON t.TrainerID = p.TrainerID
+WHERE t.TrainerID=:trainerID`,
+            [trainerID],
+            { autoCommit: true }
+        );
+        console.log("AAAAAAAAAAAAAAAA", result, trainerID)
+        return result.rows;
     }).catch(() => {
         return false;
     });
@@ -249,5 +305,9 @@ module.exports = {
     getAverageAttackByType,
     getHighDefenseTable,
     strongTrainersTable,
-    allCategoriesTrainersTable
+    allCategoriesTrainersTable,
+    trainerSearch,
+    filterTable,
+    buildSelectClause,
+    deleteID
 }
