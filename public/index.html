@@ -12,12 +12,14 @@
         <p>Optimize your gameplay with data-driven insights</p>
     </header>
         
+   <!-- Selection Implementation-->
     <div class="card">
       <h2>Pokémon Filter System</h2>
       <p>Advanced filtering and search system for Pokémon</p>
       <button class="button" id="filterSystemButton">Open Filter System</button>
   </div>
 
+   <!-- Join Implementation-->
   <div class="card">
     <h2>Find Pokémon by Trainer</h2>
     <p>Search for Pokémon owned by specific trainers</p>
@@ -59,8 +61,12 @@
             <p>Access and manage your Pokémon collection with detailed statistics and information.</p>
             <button class="button" id="showFormButton">Add</button>
             <form id="insertDemotable" style="display: none;">
-                ID: <input type="number" id="insertId" placeholder="Enter ID" required> <br><br>
-                Name: <input type="text" id="insertName" placeholder="Enter Name" maxlength="20"> <br><br>
+                Pokémon ID: <input type="number" id="insertId" placeholder="Enter ID" required> <br><br>
+                Pokémon Name: <input type="text" id="insertName" placeholder="Enter Name" maxlength="20"> <br><br>
+                Pokémon Type: <input type="text" id="insertType" placeholder="Enter Type" maxlength="20"> <br><br>
+                Pokémon Gender: <input type="text" id="insertGender" placeholder="Enter Gender" maxlength="5"> <br><br>
+                Pokémon Ability: <input type="text" id="insertAbility" placeholder="Enter Ability" maxlength="20"> <br><br>
+                Trainer ID: <input type="text" id="insertTrainer" placeholder="Enter Trainer" maxlength="20"> <br><br>
                 <button type="submit" class="smallbutton">Submit</button> <br>
             </form>
             <div id="insertResultMsg"></div>

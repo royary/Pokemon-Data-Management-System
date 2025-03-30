@@ -46,6 +46,10 @@ async function insertDemotable(event){
     event.preventDefault();
     const idValue = document.getElementById('insertId').value;
     const nameValue = document.getElementById('insertName').value;
+    const typeValue = document.getElementById('insertType').value;
+    const genderValue = document.getElementById('insertGender').value;
+    const abilityValue = document.getElementById('insertAbility').value;
+    const trainerValue = document.getElementById('insertTrainer').value;
     console.log("I'm at script.js");
     const response = await fetch('/insert-demotable', {
         method: 'POST',
@@ -54,7 +58,11 @@ async function insertDemotable(event){
         },
         body: JSON.stringify({
             id: idValue,
-            name: nameValue
+            name: nameValue,
+            type: typeValue,
+            gender: genderValue,
+            ability: abilityValue,
+            trainer: trainerValue
         })
     });
     console.log(response);

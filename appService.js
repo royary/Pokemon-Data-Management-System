@@ -211,11 +211,11 @@ async function initiateDemotable() {
         return false;
     });
 }
-async function insertDemotable(id, name) {
+async function insertDemotable(id, name, type, gender, ability, trainer) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
-            `INSERT INTO PokemonTrains (id, name) VALUES (:id, :name)`,
-            [id, name],
+            `INSERT INTO PokemonTrains (PokemonID, PokemonName, TypeName, PokemonGender, Ability, TrainerID) VALUES (:id, :name, :type, :gender, :ability, :trainer)`,
+            [id, name, type, gender, ability, trainer],
             { autoCommit: true }
         );
         return result.rowsAffected && result.rowsAffected > 0;
