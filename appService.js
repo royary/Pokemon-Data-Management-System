@@ -87,6 +87,21 @@ GROUP BY p.TypeName
     });
 }
 
+async function getHighDefenseTable() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(`SELECT p.TypeName, AVG(s.Defense) AS AvgDefense
+FROM PokemonTrains p
+JOIN Shows sh ON p.PokemonID = sh.PokemonID
+JOIN Stats s ON sh.StatsID = s.StatsID
+GROUP BY p.TypeName
+HAVING AVG(s.Defense) > 10
+`);
+        return result.rows;
+    }).catch((err) => {
+        console.log("Error getting average attack by type in DB connection", err);
+        return [];
+    });
+}
 // async function initiateDemotable() {
 //     return await withOracleDB(async (connection) => {
 //         try {
@@ -181,5 +196,6 @@ module.exports = {
     updateTable,
     fetchDemotableFromDb,
     insertDemotable,
-    getAverageAttackByType
+    getAverageAttackByType,
+    getHighDefenseTable
 }

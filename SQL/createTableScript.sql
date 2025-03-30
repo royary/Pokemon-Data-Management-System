@@ -82,12 +82,12 @@ CREATE TABLE Stats (
 );
 
 INSERT ALL
-    INTO Stats (StatsID, HP, Attack, Defense, SpecialAttack, SpecialDefense, Speed) VALUES ('0001', 3, 3, 3, 4, 4, 3)
-    INTO Stats (StatsID, HP, Attack, Defense, SpecialAttack, SpecialDefense, Speed) VALUES ('0002', 4, 4, 4, 5, 5, 4)
-    INTO Stats (StatsID, HP, Attack, Defense, SpecialAttack, SpecialDefense, Speed) VALUES ('0003', 5, 5, 5, 6, 6, 5)
-    INTO Stats (StatsID, HP, Attack, Defense, SpecialAttack, SpecialDefense, Speed) VALUES ('0004', 3, 4, 3, 4, 3, 4)
-    INTO Stats (StatsID, HP, Attack, Defense, SpecialAttack, SpecialDefense, Speed) VALUES ('0005', 4, 4, 4, 5, 4, 5)
-    INTO Stats (StatsID, HP, Attack, Defense, SpecialAttack, SpecialDefense, Speed) VALUES ('0006', 5, 5, 5, 5, 5, 5) 
+    INTO Stats (StatsID, HP, Attack, Defense, SpecialAttack, SpecialDefense, Speed) VALUES ('0001', 30, 36, 31, 45, 4, 30)
+    INTO Stats (StatsID, HP, Attack, Defense, SpecialAttack, SpecialDefense, Speed) VALUES ('0002', 45, 42, 45, 56, 55, 10)
+    INTO Stats (StatsID, HP, Attack, Defense, SpecialAttack, SpecialDefense, Speed) VALUES ('0003', 53, 57, 50, 67, 6, 5)
+    INTO Stats (StatsID, HP, Attack, Defense, SpecialAttack, SpecialDefense, Speed) VALUES ('0004', 36, 42, 30, 4, 33, 10)
+    INTO Stats (StatsID, HP, Attack, Defense, SpecialAttack, SpecialDefense, Speed) VALUES ('0005', 47, 24, 20, 53, 4, 30)
+    INTO Stats (StatsID, HP, Attack, Defense, SpecialAttack, SpecialDefense, Speed) VALUES ('0006', 53, 55, 10, 54, 5, 54) 
 SELECT * FROM dual;
 
 
@@ -135,8 +135,8 @@ INSERT ALL
     INTO Shows (PokemonID, StatsID) VALUES ('0001', '0001')
     INTO Shows (PokemonID, StatsID) VALUES ('0002', '0002')
     INTO Shows (PokemonID, StatsID) VALUES ('0003', '0003')
-    INTO Shows (PokemonID, StatsID) VALUES ('0008', '0004')
-    INTO Shows (PokemonID, StatsID) VALUES ('0039', '0005')
+    INTO Shows (PokemonID, StatsID) VALUES ('0004', '0004')
+    INTO Shows (PokemonID, StatsID) VALUES ('0005', '0005')
     INTO Shows (PokemonID, StatsID) VALUES ('0175', '0006')
 SELECT * FROM dual;
 
