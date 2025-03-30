@@ -52,10 +52,10 @@
             
                     <div class="condition">
                         <select class="attribute-select">
-                            <option value="TypeName">TypeName</option>
-                            <option value="Ability">Ability</option>
-                            <option value="Weakness">Weakness</option>
-                            <option value="Strength">Strength</option>
+                            <option value="t.TypeName">TypeName</option>
+                            <option value="p.Ability">Ability</option>
+                            <option value="t.Weakness">Weakness</option>
+                            <option value="t.Strength">Strength</option>
                         </select>
 
                         <select class="operator-select">
@@ -85,9 +85,9 @@
                     <button class="button" onclick="addConditionGroup()">+ Add New Condition Group</button>
                 </div>
 
-                <!-- Search Button -->
-                <button class="button" onclick="performSearch()">Search</button>
-                <button class="button" onclick="window.location.href='/'">Back to Home</button>
+                <!-- Search Button
+                <button class="button" onclick="performSearch()">Search</button> -->
+
             </div>
         </div>
     </div>
@@ -95,18 +95,35 @@
     <!-- Projection Implementation -->
     <div class="container">
         <div class="card">
-    <div class="projection-controls" id="projection-controls">
+     <div class="projection-controls" id="projection-controls">
         <h3>Select Attributes to Display:</h3>
         <div>
-            <label><input type="checkbox" name="projectionAttributes" value="PokemonID" checked> PokemonID</label>
-            <label><input type="checkbox" name="projectionAttributes" value="PokemonName" checked> PokemonName</label>
-            <label><input type="checkbox" name="projectionAttributes" value="TypeName" checked> TypeName</label>
-            <label><input type="checkbox" name="projectionAttributes" value="Ability" checked> Ability</label>
-            <label><input type="checkbox" name="projectionAttributes" value="Weakness" checked> Weakness</label>
-            <label><input type="checkbox" name="projectionAttributes" value="Resistance" checked> Resistance</label>
-            <label><input type="checkbox" name="projectionAttributes" value="Strength" checked> Strength</label>
+            <label><input type="checkbox" name="projectionAttributes" value="p.PokemonID" checked> PokemonID</label>
+            <label><input type="checkbox" name="projectionAttributes" value="p.PokemonName" checked> PokemonName</label>
+            <label><input type="checkbox" name="projectionAttributes" value="t.TypeName" checked> TypeName</label>
+            <label><input type="checkbox" name="projectionAttributes" value="p.Ability" checked> Ability</label>
+            <label><input type="checkbox" name="projectionAttributes" value="t.Weakness" checked> Weakness</label>
+            <label><input type="checkbox" name="projectionAttributes" value="t.Resistance" checked> Resistance</label>
+            <label><input type="checkbox" name="projectionAttributes" value="t.Strength" checked> Strength</label>
         </div>
-        <button class="button" onclick="applyProjection()">Apply</button>
+        <button class="button" onclick="performSearch()">Apply</button>
+        <button class="button" onclick="window.location.href='/'">Back to Home</button>
+                    <!-- Results Table -->
+                    <div style="margin-top: 20px;">
+                        <table id="resultsTable" border="1" style="display: none;">
+                            <thead>
+                                <tr>
+                                    <!-- <th>TrainerID</th>
+                                    <th>TrainerName</th>
+                                    <th>PokemonID</th>
+                                    <th>PokemonName</th> -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="searchResultMsg"></div>
     </div>
 </div>
 <div>

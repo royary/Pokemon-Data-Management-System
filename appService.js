@@ -224,7 +224,30 @@ async function insertDemotable(id, name, type, gender, ability, trainer) {
     });
 }
 
+function buildSelectClause(attributes) {
+    if (!attributes || attributes.length === 0) {
+        return '*';
+    }
+    return attributes.join(', ');
+}
 
+
+
+async function filterTable(attribute, whereClause) {
+    const selectClause = buildSelectClause(attribute);
+    const query = `SELECT ${selectClause} FROM PokemonTrains p JOIN PokemonType t ON p.TypeName = t.TypeName
+    WHERE ${whereClause}`;
+    console.log(query)
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            query
+        );
+        console.log(result.rows)
+        return result.rows;
+    }).catch(() => {
+        return false;
+    });
+}
 
 async function updateTable(oldname, newname) {
     return await withOracleDB(async (connection) => {
@@ -270,5 +293,6 @@ module.exports = {
     strongTrainersTable,
     allCategoriesTrainersTable,
     trainerSearch,
-    filterTable
+    filterTable,
+    buildSelectClause
 }

@@ -101,7 +101,7 @@ router.post("/filter", async (req, res) => {
     const {attribute, whereClause} = req.body;
     const filterResult = await appService.filterTable(attribute, whereClause);
     if(filterResult) {
-        res.json({success: true});
+        res.json({success: true, data: filterResult});
     }else {
         res.status(500).json({success: false});
     }

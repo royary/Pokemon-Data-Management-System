@@ -19,10 +19,10 @@ function addConditionGroup(){
         <h3>Condition Group ${groupCounter}</h3>
         <div class="condition">
             <select class="attribute-select">
-                <option value="TypeName">TypeName</option>
-                <option value="Ability">Ability</option>
-                <option value="Weakness">Weakness</option>
-                <option value="Strength">Strength</option>
+                <option value="t.TypeName">TypeName</option>
+                <option value="p.Ability">Ability</option>
+                <option value="t.Weakness">Weakness</option>
+                <option value="t.Strength">Strength</option>
             </select>
 
             <select class="operator-select">
@@ -86,7 +86,8 @@ function buildWhereClause() {
     conditions.forEach((condition, conditionIndex)=>{
         const attribute = group.querySelector('.attribute-select').value;
         const operator = group.querySelector('.operator-select').value;
-        const value = group.querySelector('.value-input').value;
+        let value = group.querySelector('.value-input').value;
+        value = "'" + value + "'";
         console.log("GGGGG", attribute, operator, value)
 
         if(value.trim()){
@@ -94,7 +95,6 @@ function buildWhereClause() {
             console.log("groupClause", groupClause)
             whereClause.push(groupClause);
         }
-        console.log("whereClause", whereClause)
     });
 });
     let finalResult = '';
@@ -122,14 +122,17 @@ function getProjectionAttribute(){
     return Array.from(checkboxes).map(cb => cb.value);
 }
 
-function displayResult(){
+function displayResult(responseData, projectionAttribute){
 return [];
 }
 
 async function performSearch(){
     const whereClause = buildWhereClause();
     const projectionAttribute = getProjectionAttribute();
-    console.log("WWWWWWWWWW", whereClause)
+    const resultsTable = document.getElementById('resultsTable');
+    // const tableBody = resultsTable.querySelector('tbody');
+    // const searchResultMsg = document.getElementById('searchResultMsg');
+    // console.log("WWWWWWWWWW", whereClause)
     try{
         const response = await fetch('/filter', {
             method: 'POST',
@@ -143,9 +146,8 @@ async function performSearch(){
         });
 
         const responseData = await response.json();
-    
-        if(responseData.success) {
-            displayResult(responseData.data, projectionAttribute);
+        if(responseData.success && responseData.data.length > 0) {
+            displayResults(responseData.data, projectionAttribute);
         }else {
            alert('Error performing search. Please try again.')
         }  
