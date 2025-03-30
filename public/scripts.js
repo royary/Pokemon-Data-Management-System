@@ -233,6 +233,37 @@ showStrongTrainersButton.addEventListener('click', async function(event) {
 }
 });
 
+const showAllCategoriesTrainersButton = document.getElementById('showAllCategoriesTrainersButton');
+showAllCategoriesTrainersButton.addEventListener('click', async function(event) {
+    event.preventDefault();
+    const table = document.getElementById('allCategoriesTrainersTable');
+    const tableBody = table.querySelector('tbody');
+    if(table.style.display === 'none'){
+    try {
+    const response = await fetch('/allCategoriesTrainersTable', {
+        method: 'GET'
+    });
+    const data = await response.json();
+    if(data.success) {
+    tableBody.innerHTML = '';
+    data.data.forEach(([name])=> {
+        const tr = document.createElement('tr');
+        const nameCell = document.createElement('th');
+        nameCell.textContent = name;
+        tr.appendChild(nameCell);
+        tableBody.appendChild(tr);
+    });
+    table.style.display = 'table';
+    } 
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error fetching all Categories Trainers Table data');
+    }
+} else {
+    table.style.display = 'none';
+}
+});
+
 const showFormButton = document.getElementById('showFormButton');
 showFormButton.addEventListener('click', function() {
     if(insertDemotableForm.style.display === 'none') {

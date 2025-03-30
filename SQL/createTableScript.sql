@@ -68,6 +68,11 @@ INSERT ALL
     INTO PokemonTrains (PokemonID, PokemonName, TypeName, PokemonGender, Ability, TrainerID) VALUES ('0025', 'Pikachu', 'Electric', 'F/M', 'Static', '3')
     INTO PokemonTrains (PokemonID, PokemonName, TypeName, PokemonGender, Ability, TrainerID) VALUES ('0039', 'Jigglypuff', 'Fairy', 'F/M', 'Cute Charm', '4')
     INTO PokemonTrains (PokemonID, PokemonName, TypeName, PokemonGender, Ability, TrainerID) VALUES ('0175', 'Togepi', 'Fairy', 'F/M', 'Hustle', '1')
+    INTO PokemonTrains (PokemonID, PokemonName, TypeName, PokemonGender, Ability, TrainerID) VALUES ('0666', 'A', 'Grass', 'F/M', 'Hustle', '10')
+    INTO PokemonTrains (PokemonID, PokemonName, TypeName, PokemonGender, Ability, TrainerID) VALUES ('0777', 'B', 'Fire', 'F/M', 'Hustle', '10')
+    INTO PokemonTrains (PokemonID, PokemonName, TypeName, PokemonGender, Ability, TrainerID) VALUES ('0888', 'C', 'Water', 'F/M', 'Hustle', '10')
+    INTO PokemonTrains (PokemonID, PokemonName, TypeName, PokemonGender, Ability, TrainerID) VALUES ('0999', 'D', 'Electric', 'F/M', 'Hustle', '10')
+    INTO PokemonTrains (PokemonID, PokemonName, TypeName, PokemonGender, Ability, TrainerID) VALUES ('1000', 'E', 'Fairy', 'F/M', 'Hustle', '10')
 SELECT * FROM dual;
 
 
@@ -104,6 +109,7 @@ INSERT ALL
     INTO Trainer (TrainerID, TrainerName, TrainerGender) VALUES ('2', 'Clair', 'M')
     INTO Trainer (TrainerID, TrainerName, TrainerGender) VALUES ('3', 'Alain', 'M')
     INTO Trainer (TrainerID, TrainerName, TrainerGender) VALUES ('4', 'Iris', 'M')
+    INTO Trainer (TrainerID, TrainerName, TrainerGender) VALUES ('10', 'Alex', 'F')
 SELECT * FROM dual;
 
 
@@ -156,4 +162,9 @@ INSERT ALL
     INTO BelongsTo (CategoryName, PokemonID) VALUES ('Mouse Pokemon', '0005')
     INTO BelongsTo (CategoryName, PokemonID) VALUES ('Fox Pokemon', '0039')
     INTO BelongsTo (CategoryName, PokemonID) VALUES ('Bat Pokemon', '0003')
+    INTO BelongsTo (CategoryName, PokemonID) VALUES ('Seed Pokemon', '0666')
+    INTO BelongsTo (CategoryName, PokemonID) VALUES ('Bird Pokemon', '0777')
+    INTO BelongsTo (CategoryName, PokemonID) VALUES ('Mouse Pokemon', '0888')
+    INTO BelongsTo (CategoryName, PokemonID) VALUES ('Fox Pokemon', '0999')
+    INTO BelongsTo (CategoryName, PokemonID) VALUES ('Bat Pokemon', '1000')
 SELECT * FROM dual;
