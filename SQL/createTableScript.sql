@@ -63,6 +63,7 @@ INSERT ALL
     INTO PokemonTrains (PokemonID, PokemonName, TypeName, PokemonGender, Ability, TrainerID) VALUES ('0003', 'Venusaur', 'Grass', 'F/M', 'Overgrow', '3')
     INTO PokemonTrains (PokemonID, PokemonName, TypeName, PokemonGender, Ability, TrainerID) VALUES ('0004', 'Charmander', 'Fire', 'F/M', 'Blaze', '2')
     INTO PokemonTrains (PokemonID, PokemonName, TypeName, PokemonGender, Ability, TrainerID) VALUES ('0005', 'Charmeleon', 'Fire', 'F/M', 'Blaze', '3')
+    INTO PokemonTrains (PokemonID, PokemonName, TypeName, PokemonGender, Ability, TrainerID) VALUES ('0006', 'Charizard', 'Fire', 'F/M', 'Blaze', '5')
     INTO PokemonTrains (PokemonID, PokemonName, TypeName, PokemonGender, Ability, TrainerID) VALUES ('0007', 'Squirtle', 'Water', 'F/M', 'Torrent', '3')
     INTO PokemonTrains (PokemonID, PokemonName, TypeName, PokemonGender, Ability, TrainerID) VALUES ('0008', 'Wartortle', 'Water', 'F/M', 'Torrent', '4')
     INTO PokemonTrains (PokemonID, PokemonName, TypeName, PokemonGender, Ability, TrainerID) VALUES ('0025', 'Pikachu', 'Electric', 'F/M', 'Static', '3')
