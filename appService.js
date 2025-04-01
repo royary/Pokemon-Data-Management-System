@@ -317,6 +317,53 @@ async function deleteID(id) {
 }
 
 // select attributes
+// function buildSelectClause(attributes) {
+//     if (!attributes || attributes.length === 0) {
+//         return '*';
+//     }
+//     return attributes.join(', ');
+// }
+
+// apply conditions
+// function buildWhereClause(conditions) {
+//     if(!conditions || conditions.length === 0) {
+//         return { clause: '', binds: {} };
+//     }
+//     var clause = 'WHERE';
+//     var binds = {};
+
+//     for (var i = 0; i < conditions.length; i++) {
+//         var cond = conditions[i];
+//         var bindName = 'val' + i;
+        
+//         clause += cond.attribute + ' ' + cond.operator + ' :' + bindName;
+//         binds[bindName] = cond.value;
+//     }
+
+
+//     return {clause: clause, binds: binds };
+// }
+
+
+
+// async function filterTable(attribute, condition) {
+//     const selectClause = buildSelectClause(attribute);
+//     const whereData = buildWhereClause(condition);
+//     const whereClause = whereData.clause;
+//     const binds = whereData.binds;
+//     const query = `SELECT ${selectClause} FROM PokemonTrains p JOIN PokemonType t ON p.TypeName = t.TypeName
+//     ${whereClause}`;
+//     console.log(query);
+
+//     return await withOracleDB(async (connection) => {
+//         const result = await connection.execute(query,binds);
+//         console.log(result.rows)
+//         return result.rows;
+//     }).catch(() => {
+//         return false;
+//     });
+// }
+
 function buildSelectClause(attributes) {
     if (!attributes || attributes.length === 0) {
         return '*';
@@ -324,39 +371,17 @@ function buildSelectClause(attributes) {
     return attributes.join(', ');
 }
 
-// apply conditions
-function buildWhereClause(conditions) {
-    if(!conditions || conditions.length === 0) {
-        return { clause: '', binds: {} };
-    }
-    var clause = 'WHERE';
-    var binds = {};
-
-    for (var i = 0; i < conditions.length; i++) {
-        var cond = conditions[i];
-        var bindName = 'val' + i;
-        
-        clause += cond.attribute + ' ' + cond.operator + ' :' + bindName;
-        binds[bindName] = cond.value;
-    }
 
 
-    return {clause: clause, binds: binds };
-}
-
-
-
-async function filterTable(attribute, condition) {
+async function filterTable(attribute, whereClause) {
     const selectClause = buildSelectClause(attribute);
-    const whereData = buildWhereClause(condition);
-    const whereClause = whereData.clause;
-    const binds = whereData.binds;
     const query = `SELECT ${selectClause} FROM PokemonTrains p JOIN PokemonType t ON p.TypeName = t.TypeName
-    ${whereClause}`;
-    console.log(query);
-
+    WHERE ${whereClause}`;
+    console.log(query)
     return await withOracleDB(async (connection) => {
-        const result = await connection.execute(query,binds);
+        const result = await connection.execute(
+            query
+        );
         console.log(result.rows)
         return result.rows;
     }).catch(() => {

@@ -51,8 +51,13 @@
                 <p>Update Pokémon here.</p>
                 <button class="button" id="showUpdateFormButton">Update</button>
                 <form id="updateTable" style="display: none;">
-                    Old Name: <input type="text" id="updateOldName" placeholder="Enter Old Name" required> <br><br>
+                    Pokemon ID (Required): <input type="number" id="updateId" placeholder="Enter ID" required> <br><br>
+                    
                     New Name: <input type="text" id="updateNewName" placeholder="Enter New Name" maxlength="20"> <br><br>
+                    New Type: <input type="text" id="updateNewType" placeholder="Enter Type" maxlength="20"> <br><br>
+                    New Gender: <input type="text" id="updateNewGender" placeholder="Enter Gender" maxlength="10"> <br><br>
+                    New Ability: <input type="text" id="updateNewAbility" placeholder="Enter Ability" maxlength="20"> <br><br>
+                    New Trainer ID: <input type="text" id="updateNewTrainerID" placeholder="Enter Trainer ID" maxlength="20"> <br><br>
             
                     <button type="submit" class="smallbutton"> Submit </button> <br>
                 </form>

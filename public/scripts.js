@@ -111,16 +111,33 @@ async function insertDemotable(event){
 
 async function updateTable(event){
     event.preventDefault();
-    const oldNameValue = document.getElementById('updateOldName').value;
+    const idValue = document.getElementById('updateId').value; 
     const newNameValue = document.getElementById('updateNewName').value;
+    const newTypeValue = document.getElementById('updateNewType').value;
+    const newGenderValue = document.getElementById('updateNewGender').value;
+    const newAbilityValue = document.getElementById('updateNewAbility').value;
+    const newTrainerIDValue = document.getElementById('updateNewTrainerID').value;
+
+    const updates = {};
+    if (newNameValue) updates.name = newNameValue;
+    if (newTypeValue) updates.type = newTypeValue;
+    if (newGenderValue) updates.gender = newGenderValue;
+    if (newAbilityValue) updates.ability = newAbilityValue;
+    if (newTrainerIDValue) updates.trainerID = newTrainerIDValue;
+
+    if (Object.keys(updates).length === 0) {
+        showTemporaryMessage('updateResultMsg', "Please fill at least one field to update.");
+        return;
+    }
+
     const response = await fetch('/update-table', {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            oldname:oldNameValue,
-            newname:newNameValue
+            id: idValue,
+            updates: updates
         })
     });
     const responseData = await response.json();
