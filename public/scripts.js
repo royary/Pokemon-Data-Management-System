@@ -145,7 +145,8 @@ async function updateTable(event){
         showTemporaryMessage('updateResultMsg', "Update Pokemon successfully");
         fetchAndDisplayUsers();
     } else {
-        showTemporaryMessage('updateResultMsg', "Error updating Pokemon");
+        const errorMessage = responseData.error || "Error updating Pokemon";
+        showTemporaryMessage('updateResultMsg', errorMessage);
     }
 
 }
