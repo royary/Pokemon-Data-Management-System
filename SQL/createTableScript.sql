@@ -306,3 +306,35 @@ INSERT ALL
     INTO GymLeader (LeaderName, Type, GymName) VALUES ('Janine', 'Poison', 'Fuchsia Gym')
 SELECT * FROM dual;
 
+CREATE TABLE EvolutionCan (
+    EvolutionName VARCHAR(20),
+    Stage INTEGER,
+    PokemonID VARCHAR(20),
+    PRIMARY KEY (EvolutionName, PokemonID),
+    FOREIGN KEY (PokemonID) REFERENCES Pokemon(PokemonID) ON
+    DELETE CASCADE
+);
+
+INSERT ALL
+    INTO EvolutionCan (EvolutionName, Stage, PokemonID) VALUES ('Mega Venusaur', 1, '0003')
+    INTO EvolutionCan (EvolutionName, Stage, PokemonID) VALUES ('Gigantamax Venusaur', 2, '0003')
+    INTO EvolutionCan (EvolutionName, Stage, PokemonID) VALUES ('Mega Charizard X', 1, '0006')
+    INTO EvolutionCan (EvolutionName, Stage, PokemonID) VALUES ('Mega Charizard Y', 2, '0006')
+    INTO EvolutionCan (EvolutionName, Stage, PokemonID) VALUES ('Mega Charizard Z', 2, '0011')
+    INTO EvolutionCan (EvolutionName, Stage, PokemonID) VALUES ('Gigantamax Charizard', 3, '0006')
+SELECT * FROM dual;
+
+CREATE TABLE Location (
+    LocationID VARCHAR(20) PRIMARY KEY,
+    LocationName VARCHAR(20) NOT NULL,
+    Region VARCHAR(20) NOT NULL UNIQUE
+)
+
+INSERT ALL
+    INTO Location (LocationID, LocationName, Region) VALUES ('0001', 'Route 1', 'Kanto')
+    INTO Location (LocationID, LocationName, Region) VALUES ('0002', 'Route 2', 'Kanto')
+    INTO Location (LocationID, LocationName, Region) VALUES ('0090', 'Water Path', 'Kanto')
+    INTO Location (LocationID, LocationName, Region) VALUES ('0091', 'Route 29', 'Johto')
+    INTO Location (LocationID, LocationName, Region) VALUES ('0021', 'Route 30', 'Kyoto')
+    INTO Location (LocationID, LocationName, Region) VALUES ('0351', 'Route 1', 'Unova')
+
