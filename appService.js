@@ -231,24 +231,6 @@ async function filterTable(attribute, whereClause) {
     });
 }
 
-// Selection 2 : select the trainer by trainer ID
-async function trainerSearch(trainerID) {
-    return await withOracleDB(async (connection) => {
-        const result = await connection.execute(
-            `SELECT t.TrainerID, t.TrainerName, p.PokemonID, p.PokemonName
-FROM Trainer t
-JOIN PokemonTrains p ON t.TrainerID = p.TrainerID
-WHERE t.TrainerID=:trainerID`,
-            [trainerID],
-            { autoCommit: true }
-        );
-        console.log("AAAAAAAAAAAAAAAA", result, trainerID)
-        return result.rows;
-    }).catch(() => {
-        return false;
-    });
-}
-
 // Query 5 : projection
 // project any number of attributes of PokemonTrains Table
 async function projection(attribute) {
@@ -260,6 +242,25 @@ async function projection(attribute) {
         const result = await connection.execute(
             `SELECT ${attributes}
             FROM PokemonTrains p JOIN PokemonType t ON p.TypeName = t.TypeName`,
+            { autoCommit: true }
+        );
+        console.log("AAAAAAAAAAAAAAAA", result, trainerID)
+        return result.rows;
+    }).catch(() => {
+        return false;
+    });
+}
+
+// Query 6 : join
+// joins the Trainer and PokemonTrains tables to find all Pokemon trained by a specific trainer, based on the trainer's ID.
+async function trainerSearch(trainerID) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT t.TrainerID, t.TrainerName, p.PokemonID, p.PokemonName
+FROM Trainer t
+JOIN PokemonTrains p ON t.TrainerID = p.TrainerID
+WHERE t.TrainerID=:trainerID`,
+            [trainerID],
             { autoCommit: true }
         );
         console.log("AAAAAAAAAAAAAAAA", result, trainerID)
@@ -348,9 +349,6 @@ WHERE NOT EXISTS (
         return [];
     });
 }
-
-
-
 
 
 
