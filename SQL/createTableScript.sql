@@ -249,3 +249,50 @@ INSERT ALL
     INTO InTeam (TeamID, PokemonID) VALUES ('6', '0007')
 SELECT * FROM dual;
 
+CREATE TABLE Gym (
+    GymName VARCHAR(20) PRIMARY KEY,
+    Badge VARCHAR(20) NOT NULL,
+    Region VARCHAR(20) NOT NULL
+);
+
+INSERT ALL 
+    INTO Gym (GymName, Badge, Region) VALUES ('Pewter Gym', 'Boulder Badge', 'Kanto')
+    INTO Gym (GymName, Badge, Region) VALUES ('Cerulean Gym', 'Cascade Badge', 'Kanto')
+    INTO Gym (GymName, Badge, Region) VALUES ('Nacrene Gym', 'Basic Badge', 'Unova')
+    INTO Gym (GymName, Badge, Region) VALUES ('Aspertia Gym', 'Basic Badge', 'Unova')
+    INTO Gym (GymName, Badge, Region) VALUES ('Hulbury Stadium', 'Water Badge', 'Galar')
+    INTO Gym (GymName, Badge, Region) VALUES ('Cascarrafa Gym', 'Water Badge', 'Paldea')
+SELECT * FROM dual;
+
+CREATE TABLE RegionTypeBadge (
+    Region VARCHAR(20),
+    Type VARCHAR(20),
+    Badge VARCHAR(20) NOT NULL,
+    PRIMARY KEY (Region, Type)
+);
+
+INSERT ALL
+    INTO RegionTypeBadge (Region, Type, Badge) VALUES ('Kanto', 'Rock', 'Boulder Badge'),
+    INTO RegionTypeBadge (Region, Type, Badge) VALUES ('Kanto', 'Water', 'Cascade Badge')
+    INTO RegionTypeBadge (Region, Type, Badge) VALUES ('Hoenn', 'Rock', 'Stone Badge')
+    INTO RegionTypeBadge (Region, Type, Badge) VALUES ('Unova', 'Grass', 'Trio Badge')
+    INTO RegionTypeBadge (Region, Type, Badge) VALUES ('Unova', 'Fire', 'Trio Badge')
+    INTO RegionTypeBadge (Region, Type, Badge) VALUES ('Unova', 'Normal', 'Basic Badge')
+SELECT * FROM dual;
+
+CREATE TABLE GymLeader (
+    LeaderName VARCHAR(20) PRIMARY KEY,
+    Type VARCHAR(20) NOT NULL,
+    GymName VARCHAR(20) NOT NULL,
+    FOREIGN KEY (GymName) REFERENCES Gym(GymName)
+);
+
+INSERT ALL
+    INTO GymLeader (LeaderName, Type, GymName) VALUES ('Cilan', 'Grass', 'Striaton Gym')
+    INTO GymLeader (LeaderName, Type, GymName) VALUES ('Chili', 'Fire', 'Striaton Gym')
+    INTO GymLeader (LeaderName, Type, GymName) VALUES ('Cress', 'Water', 'Striaton Gym')
+    INTO GymLeader (LeaderName, Type, GymName) VALUES ('Nessa', 'Water', 'Hulbury Stadium')
+    INTO GymLeader (LeaderName, Type, GymName) VALUES ('Koga', 'Poison', 'Fuchsia Gym')
+    INTO GymLeader (LeaderName, Type, GymName) VALUES ('Janine', 'Poison', 'Fuchsia Gym')
+SELECT * FROM dual;
+
