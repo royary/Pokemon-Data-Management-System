@@ -72,6 +72,7 @@ async function fetchDemotableFromDb() {
     });
 }
 
+
 //Query 7: Aggregation with GROUP BY
 //average attack per pokemon type
 async function getAverageAttackByType() {
@@ -211,8 +212,20 @@ async function initiateDemotable() {
         return false;
     });
 }
+
 async function insertDemotable(id, name, type, gender, ability, trainer) {
     return await withOracleDB(async (connection) => {
+        // Handle FK, when FK does not exist, reject it.
+        const trainerCheck = await connection.execute(
+            `SELECT TypeName FROM PokemonType WHERE TypeName = :type`,
+            [type]
+        );
+
+        if (trainerCheck.rows.length === 0) {
+            console.error("Error: TypeName does not exist");
+            throw new Error("TypeName does not exist");
+        }
+
         const result = await connection.execute(
             `INSERT INTO PokemonTrains (PokemonID, PokemonName, TypeName, PokemonGender, Ability, TrainerID) VALUES (:id, :name, :type, :gender, :ability, :trainer)`,
             [id, name, type, gender, ability, trainer],
@@ -223,6 +236,72 @@ async function insertDemotable(id, name, type, gender, ability, trainer) {
         return false;
     });
 }
+
+
+// old verson: can not update any number of attributes
+// async function updateTable(id, name, type, gender, ability, trainerID) {
+//     return await withOracleDB(async (connection) => {
+//         const result = await connection.execute(
+//             `UPDATE PokemonTrains 
+//              SET PokemonName = :1, TypeName = :2, PokemonGender = :3, Ability = :4, TrainerID = :5 
+//              WHERE PokemonID = :6`,
+//             [name, type, gender, ability, trainerID, id],
+//             { autoCommit: true }
+//         );
+//         return result.rowsAffected && result.rowsAffected > 0;
+//     }).catch(() => {
+//         console.error("Update failed:", err.message);
+//         return false;
+//     });
+// }
+
+// Update the table PokemonTrains(PokemoniD, PokemonName, TypeName, PokemonGender, Ability, TrainerID )
+// (PK is PokemoniD, PokemonName UNIQUE,  TypeName FK)
+// can update any number of non-pk
+async function updateTable(id, updates) {
+    return await withOracleDB(async (connection) => {
+        const update = [];
+        const bindVars = { id }; // pk
+
+        if (updates.name) {
+            update.push("PokemonName = :name");
+            bindVars.name = updates.name;
+        }
+        if (updates.type) {
+            update.push("TypeName = :type");
+            bindVars.type = updates.type;
+        }
+        if (updates.gender) {
+            update.push("PokemonGender = :gender");
+            bindVars.gender = updates.gender;
+        }
+        if (updates.ability) {
+            update.push("Ability = :ability");
+            bindVars.ability = updates.ability;
+        }
+        if (updates.trainerID) {
+            update.push("TrainerID = :trainerID");
+            bindVars.trainerID = updates.trainerID;
+        }
+
+        if (update.length === 0) {
+            console.error("no new update");
+            return false;
+        }
+
+        const sql = ` UPDATE PokemonTrains 
+                      SET ${update.join(', ')} 
+                      WHERE PokemonID = :id`;
+
+        const result = await connection.execute(sql, bindVars, { autoCommit: true });
+
+        return result.rowsAffected && result.rowsAffected > 0;
+    }).catch((err) => {
+        console.error("Update failed:", err.message);
+        return false;
+    });
+}
+
 
 async function deleteID(id) {
     return await withOracleDB(async (connection) => {
@@ -237,7 +316,7 @@ async function deleteID(id) {
     });
 }
 
-
+// select attributes
 function buildSelectClause(attributes) {
     if (!attributes || attributes.length === 0) {
         return '*';
@@ -245,17 +324,39 @@ function buildSelectClause(attributes) {
     return attributes.join(', ');
 }
 
+// apply conditions
+function buildWhereClause(conditions) {
+    if(!conditions || conditions.length === 0) {
+        return { clause: '', binds: {} };
+    }
+    var clause = 'WHERE';
+    var binds = {};
+
+    for (var i = 0; i < conditions.length; i++) {
+        var cond = conditions[i];
+        var bindName = 'val' + i;
+        
+        clause += cond.attribute + ' ' + cond.operator + ' :' + bindName;
+        binds[bindName] = cond.value;
+    }
 
 
-async function filterTable(attribute, whereClause) {
+    return {clause: clause, binds: binds };
+}
+
+
+
+async function filterTable(attribute, condition) {
     const selectClause = buildSelectClause(attribute);
+    const whereData = buildWhereClause(condition);
+    const whereClause = whereData.clause;
+    const binds = whereData.binds;
     const query = `SELECT ${selectClause} FROM PokemonTrains p JOIN PokemonType t ON p.TypeName = t.TypeName
-    WHERE ${whereClause}`;
-    console.log(query)
+    ${whereClause}`;
+    console.log(query);
+
     return await withOracleDB(async (connection) => {
-        const result = await connection.execute(
-            query
-        );
+        const result = await connection.execute(query,binds);
         console.log(result.rows)
         return result.rows;
     }).catch(() => {
@@ -263,19 +364,7 @@ async function filterTable(attribute, whereClause) {
     });
 }
 
-async function updateTable(oldname, newname) {
-    return await withOracleDB(async (connection) => {
-        const result = await connection.execute(
-            `UPDATE PokemonTrains SET PokemonName=:newname where PokemonName=:oldname`,
-            [newname, oldname],
-            { autoCommit: true }
-        );
-        console.log(result, oldname, newname)
-        return result.rowsAffected && result.rowsAffected > 0;
-    }).catch(() => {
-        return false;
-    });
-}
+
 
 async function trainerSearch(trainerID) {
     return await withOracleDB(async (connection) => {
