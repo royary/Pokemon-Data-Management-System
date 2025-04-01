@@ -65,11 +65,15 @@ router.post("/initiate-demotable", async (req, res) => {
 router.put("/update-table", async (req, res) => {
     const { id, updates } = req.body;
     console.log(req.body)
-   const updateResult = await appService.updateTable(id, updates);
-    if(updateResult) {
-        res.json({success: true});
-    }else {
-        res.status(500).json({success: false});
+    try {
+        const updateResult = await appService.updateTable(id, updates);
+        if (updateResult) {
+            res.json ({success: true});
+        } else {
+            res.json ({success: false, error: "No rows updated. ID may not exist."})
+        }
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
     }
 });
 
