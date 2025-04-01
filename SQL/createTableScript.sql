@@ -15,6 +15,14 @@ BEGIN
    EXECUTE IMMEDIATE 'DROP TABLE Trainer CASCADE CONSTRAINTS';
 EXCEPTION WHEN OTHERS THEN NULL; END;
 /
+BEGIN 
+    EXECUTE IMMEDIATE 'DROP TABLE BeginningTrainer CASCADE CONSTRAINS';
+EXCEPTION WHEN OTHERS THEN NULL; END;
+/
+BEGIN 
+    EXECUTE IMMEDIATE 'DROP TABLE AdvancedTrainer CASCADE CONSTRAINS';
+EXCEPTION WHEN OTHERS THEN NULL; END;
+/
 BEGIN
    EXECUTE IMMEDIATE 'DROP TABLE Stats CASCADE CONSTRAINTS';
 EXCEPTION WHEN OTHERS THEN NULL; END;
@@ -27,6 +35,15 @@ BEGIN
    EXECUTE IMMEDIATE 'DROP TABLE PokemonType CASCADE CONSTRAINTS';
 EXCEPTION WHEN OTHERS THEN NULL; END;
 /
+BEGIN 
+    EXECUTE IMMEDIATE 'DROP TABLE PokemonTeam CASCADE CONSTRAINS';
+EXCEPTION WHEN OTHERS THEN NULL; END;
+/
+BEGIN  
+    EXECUTE IMMEDIATE 'DROP TABLE InTeam CASCADE CONSTRAINS';
+EXCEPTION WHEN OTHERS THEN NULL; END;
+/
+
 
 
 CREATE TABLE PokemonType (
@@ -113,6 +130,35 @@ INSERT ALL
     INTO Trainer (TrainerID, TrainerName, TrainerGender) VALUES ('10', 'Alex', 'F')
 SELECT * FROM dual;
 
+CREATE TABLE BeginningTrainer (
+    TrainerID VARCHAR(20),
+    PrimarySkill VARCHAR(20),
+    PRIMARY KEY (TrainerID)
+);
+
+INSERT ALL
+    INTO BeginningTrainer (TrainerID, PrimarySkill) VALUES ('8', 'Combat')
+    INTO BeginningTrainer (TrainerID, PrimarySkill) VALUES ('10', NULL)
+    INTO BeginningTrainer (TrainerID, PrimarySkill) VALUES ('11', 'Survival')
+    INTO BeginningTrainer (TrainerID, PrimarySkill) VALUES ('12', NULL)
+    INTO BeginningTrainer (TrainerID, PrimarySkill) VALUES ('13', 'Stealth')
+    INTO BeginningTrainer (TrainerID, PrimarySkill) VALUES ('14', NULL)
+SELECT * FROM dual
+
+CREATE TABLE AdvancedTrainer (
+    TrainerID VARCHAR(20),
+    AdvancedSkill VARCHAR(20) NOT NULL,
+    PRIMARY KEY (TrainerID)
+);
+
+INSERT ALL
+    INTO AdvancedTrainer (TrainerID, AdvancedSkill) VALUES ('1', 'Charm')
+    INTO AdvancedTrainer (TrainerID, AdvancedSkill) VALUES ('2', 'Focus')
+    INTO AdvancedTrainer (TrainerID, AdvancedSkill) VALUES ('3', 'Intuition')
+    INTO AdvancedTrainer (TrainerID, AdvancedSkill) VALUES ('4', 'Perception')
+    INTO AdvancedTrainer (TrainerID, AdvancedSkill) VALUES ('5', 'Medicine')
+    INTO AdvancedTrainer (TrainerID, AdvancedSkill) VALUES ('6', 'Command')
+SELECT * FROM dual
 
 CREATE TABLE Category (
     CategoryName VARCHAR(20) PRIMARY KEY,
@@ -169,3 +215,37 @@ INSERT ALL
     INTO BelongsTo (CategoryName, PokemonID) VALUES ('Fox Pokemon', '0999')
     INTO BelongsTo (CategoryName, PokemonID) VALUES ('Bat Pokemon', '1000')
 SELECT * FROM dual;
+
+CREATE TABLE PokemonTeam (
+    TeamID VARCHAR(20) PRIMARY KEY,
+    TeamName VARCHAR(20) NOT NULL
+);
+
+INSERT ALL
+    INTO PokemonTeam (TeamID, TeamName) VALUES ('0001', 'Alpha')
+    INTO PokemonTeam (TeamID, TeamName) VALUES ('0002', 'Beta')
+    INTO PokemonTeam (TeamID, TeamName) VALUES ('0003', 'Gamma')
+    INTO PokemonTeam (TeamID, TeamName) VALUES ('0004', 'Delta')
+    INTO PokemonTeam (TeamID, TeamName) VALUES ('0005', 'Epsilon')
+    INTO PokemonTeam (TeamID, TeamName) VALUES ('0011', 'Doota')
+SELECT * FROM dual;
+
+CREATE TABLE InTeam (
+    TeamID VARCHAR(20),
+    PokemonID VARCHAR(20),
+    PRIMARY KEY (TeamID, PokemonID),
+    FOREIGN KEY (TeamID) REFERENCES PokemonTeam(TeamID)
+        ON DELETE CASCADE,
+    FOREIGN KEY (PokemonID) REFERENCES Pokemon(PokemonID)
+        ON DELETE CASCADE
+);
+
+INSERT ALL 
+    INTO InTeam (TeamID, PokemonID) VALUES ('1', '0175')
+    INTO InTeam (TeamID, PokemonID) VALUES ('2', '0004')
+    INTO InTeam (TeamID, PokemonID) VALUES ('3', '0005')
+    INTO InTeam (TeamID, PokemonID) VALUES ('4', '0039')
+    INTO InTeam (TeamID, PokemonID) VALUES ('5', '0025')
+    INTO InTeam (TeamID, PokemonID) VALUES ('6', '0007')
+SELECT * FROM dual;
+
