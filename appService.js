@@ -234,10 +234,8 @@ async function filterTable(attribute, whereClause) {
 // Query 5 : projection
 // project any number of attributes of PokemonTrains Table
 async function projection(attribute) {
-    if (!attribute || attribute.length === 0) {
-        return '*';
-    }
-    const attributes = attribute.join(',');
+    const attributes = (!attribute || attribute.length === 0) ? '*' : attribute.join(',');
+
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
             `SELECT ${attributes}
