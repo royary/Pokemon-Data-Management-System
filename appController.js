@@ -120,4 +120,16 @@ router.post("/filter", async (req, res) => {
    
 });
 
+router.post("/projection", async (req, res) => {
+    const {attribute} = req.body;
+    const projectResult = await appService.projection(attribute);
+    if(projectResult) {
+        res.json({success: true, data: projectResult});
+    }else {
+        res.status(500).json({success: false});
+    }
+   
+});
+
+
 module.exports = router;

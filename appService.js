@@ -72,6 +72,203 @@ async function fetchDemotableFromDb() {
     });
 }
 
+async function initiateDemotable() {
+    return await withOracleDB(async (connection) => {
+        try {
+            const createTableScript = fs.readFileSync(
+                path.join(__dirname, '/SQL/createTableScript.sql'),
+                'utf8'
+            );
+
+            // Split by "END;\n/" for PL/SQL blocks, if any
+            const statements = createTableScript.split("END;\n/").map(statement => statement.trim()).filter(statement => statement.length > 0);
+
+            for (let statement of statements) {
+                if (statement.startsWith("BEGIN")) {
+                    if (!statement.endsWith("END;")) {
+                        statement += "END;";
+                    }
+                    // console.log("stat:", statement);
+                    await connection.execute(statement, [], { autoCommit: true });
+                } else {
+                    const substatements = statement.split(';').map(sub => sub.trim()).filter(sub => sub.length > 0);
+                    for (let sub of substatements) {
+                        console.log("sub:", sub);
+                        result = await connection.execute(sub, [], { autoCommit: true });
+                        console.log("RESULT", result);
+                    }
+                }
+            }
+
+            console.log("Tables initialized from script");
+            return true;
+        } catch (err) {
+            console.error("Error initializing tables:", err);
+            return false;
+        }
+    }).catch((err) => {
+        console.error("Database connection error:", err);
+        return false;
+    });
+}
+
+// Query 1 : Insert
+// Insert one tuple to the Pokemon(TrainsPokemoniD, PokemonName, TypeName, PokemonGender, Ability, TrainerID )
+// Handling the foriegn key : Typename
+async function insertDemotable(id, name, type, gender, ability, trainer) {
+    return await withOracleDB(async (connection) => {
+        // Handle FK, when FK does not exist, reject it.
+        const trainerCheck = await connection.execute(
+            `SELECT TypeName FROM PokemonType WHERE TypeName = :type`,
+            [type]
+        );
+
+        if (trainerCheck.rows.length === 0) {
+            console.error("Error: TypeName does not exist");
+            throw new Error("TypeName does not exist");
+        }
+
+        const result = await connection.execute(
+            `INSERT INTO PokemonTrains (PokemonID, PokemonName, TypeName, PokemonGender, Ability, TrainerID) VALUES (:id, :name, :type, :gender, :ability, :trainer)`,
+            [id, name, type, gender, ability, trainer],
+            { autoCommit: true }
+        );
+        return result.rowsAffected && result.rowsAffected > 0;
+    }).catch(() => {
+        return false;
+    });
+}
+
+
+// Query 2 : Update
+// Update the table PokemonTrains(PokemoniD, PokemonName, TypeName, PokemonGender, Ability, TrainerID )
+// (PK is PokemoniD, PokemonName UNIQUE,  TypeName FK)
+// can update any number of non-pk
+async function updateTable(id, updates) {
+    return await withOracleDB(async (connection) => {
+        const update = [];
+        const bindVars = { id }; // pk
+
+        if (updates.name) {
+            update.push("PokemonName = :name");
+            bindVars.name = updates.name;
+        }
+        if (updates.type) {
+            update.push("TypeName = :type");
+            bindVars.type = updates.type;
+        }
+        if (updates.gender) {
+            update.push("PokemonGender = :gender");
+            bindVars.gender = updates.gender;
+        }
+        if (updates.ability) {
+            update.push("Ability = :ability");
+            bindVars.ability = updates.ability;
+        }
+        if (updates.trainerID) {
+            update.push("TrainerID = :trainerID");
+            bindVars.trainerID = updates.trainerID;
+        }
+
+        if (update.length === 0) {
+            console.error("no new update");
+            return false;
+        }
+
+        const sql = ` UPDATE PokemonTrains 
+                      SET ${update.join(', ')} 
+                      WHERE PokemonID = :id`;
+
+        const result = await connection.execute(sql, bindVars, { autoCommit: true });
+
+        return result.rowsAffected && result.rowsAffected > 0;
+    }).catch((err) => {
+        console.error("Update failed:", err.message);
+        return false;
+    });
+}
+
+// Query 3 : Delete
+// Delete a specific tuple in PokemonTrains(PokemonID, PokemonName, TypeName, PokemonGender, Ability, TrainerID )
+// by specify the PK PokemonID
+async function deleteID(id) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `DELETE FROM PokemonTrains WHERE PokemonID = :id`,
+            [id],
+            { autoCommit: true }
+        );
+        return result.rowsAffected && result.rowsAffected > 0;
+    }).catch(() => {
+        return false;
+    });
+}
+
+
+
+// Query 4 : Selection
+// Allowed to search for tuples using any number of AND/OR clauses and combinations of attributes in PokemonTrains
+function buildSelectClause(attributes) {
+    if (!attributes || attributes.length === 0) {
+        return '*';
+    }
+    return attributes.join(', ');
+}
+
+async function filterTable(attribute, whereClause) {
+    const selectClause = buildSelectClause(attribute);
+    const query = `SELECT ${selectClause} FROM PokemonTrains p JOIN PokemonType t ON p.TypeName = t.TypeName
+    WHERE ${whereClause}`;
+    console.log(query)
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            query
+        );
+        console.log(result.rows)
+        return result.rows;
+    }).catch(() => {
+        return false;
+    });
+}
+
+// Selection 2 : select the trainer by trainer ID
+async function trainerSearch(trainerID) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT t.TrainerID, t.TrainerName, p.PokemonID, p.PokemonName
+FROM Trainer t
+JOIN PokemonTrains p ON t.TrainerID = p.TrainerID
+WHERE t.TrainerID=:trainerID`,
+            [trainerID],
+            { autoCommit: true }
+        );
+        console.log("AAAAAAAAAAAAAAAA", result, trainerID)
+        return result.rows;
+    }).catch(() => {
+        return false;
+    });
+}
+
+// Query 5 : projection
+// project any number of attributes of PokemonTrains Table
+async function projection(attribute) {
+    if (!attribute || attribute.length === 0) {
+        return '*';
+    }
+    const attributes = attribute.join(',');
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `SELECT ${attributes}
+            FROM PokemonTrains p JOIN PokemonType t ON p.TypeName = t.TypeName`,
+            { autoCommit: true }
+        );
+        console.log("AAAAAAAAAAAAAAAA", result, trainerID)
+        return result.rows;
+    }).catch(() => {
+        return false;
+    });
+}
+
 
 //Query 7: Aggregation with GROUP BY
 //average attack per pokemon type
@@ -152,261 +349,8 @@ WHERE NOT EXISTS (
     });
 }
 
-// async function initiateDemotable() {
-//     return await withOracleDB(async (connection) => {
-//         try {
-//             await connection.execute(`DROP TABLE POKEMON`);
-//         } catch(err) {
-//             console.log('Table might not exist, proceeding to creat...');
-//         }
-
-//         const result = await connection.execute(`
-//             CREATE TABLE POKEMON (
-//             id NUMBER PRIMARY KEY,
-//             name VARCHAR2(20)
-//             )
-//         `);
-//         console.log("Initialize table")
-//         return true;
-//     }).catch(()=> {
-//         return false;
-//     }
-//     );
-// }
-async function initiateDemotable() {
-    return await withOracleDB(async (connection) => {
-        try {
-            const createTableScript = fs.readFileSync(
-                path.join(__dirname, '/SQL/createTableScript.sql'),
-                'utf8'
-            );
-
-            // Split by "END;\n/" for PL/SQL blocks, if any
-            const statements = createTableScript.split("END;\n/").map(statement => statement.trim()).filter(statement => statement.length > 0);
-
-            for (let statement of statements) {
-                if (statement.startsWith("BEGIN")) {
-                    if (!statement.endsWith("END;")) {
-                        statement += "END;";
-                    }
-                    // console.log("stat:", statement);
-                    await connection.execute(statement, [], { autoCommit: true });
-                } else {
-                    const substatements = statement.split(';').map(sub => sub.trim()).filter(sub => sub.length > 0);
-                    for (let sub of substatements) {
-                        console.log("sub:", sub);
-                        result = await connection.execute(sub, [], { autoCommit: true });
-                        console.log("RESULT", result);
-                    }
-                }
-            }
-
-            console.log("Tables initialized from script");
-            return true;
-        } catch (err) {
-            console.error("Error initializing tables:", err);
-            return false;
-        }
-    }).catch((err) => {
-        console.error("Database connection error:", err);
-        return false;
-    });
-}
-
-async function insertDemotable(id, name, type, gender, ability, trainer) {
-    return await withOracleDB(async (connection) => {
-        // Handle FK, when FK does not exist, reject it.
-        const trainerCheck = await connection.execute(
-            `SELECT TypeName FROM PokemonType WHERE TypeName = :type`,
-            [type]
-        );
-
-        if (trainerCheck.rows.length === 0) {
-            console.error("Error: TypeName does not exist");
-            throw new Error("TypeName does not exist");
-        }
-
-        const result = await connection.execute(
-            `INSERT INTO PokemonTrains (PokemonID, PokemonName, TypeName, PokemonGender, Ability, TrainerID) VALUES (:id, :name, :type, :gender, :ability, :trainer)`,
-            [id, name, type, gender, ability, trainer],
-            { autoCommit: true }
-        );
-        return result.rowsAffected && result.rowsAffected > 0;
-    }).catch(() => {
-        return false;
-    });
-}
 
 
-// old verson: can not update any number of attributes
-// async function updateTable(id, name, type, gender, ability, trainerID) {
-//     return await withOracleDB(async (connection) => {
-//         const result = await connection.execute(
-//             `UPDATE PokemonTrains 
-//              SET PokemonName = :1, TypeName = :2, PokemonGender = :3, Ability = :4, TrainerID = :5 
-//              WHERE PokemonID = :6`,
-//             [name, type, gender, ability, trainerID, id],
-//             { autoCommit: true }
-//         );
-//         return result.rowsAffected && result.rowsAffected > 0;
-//     }).catch(() => {
-//         console.error("Update failed:", err.message);
-//         return false;
-//     });
-// }
-
-// Update the table PokemonTrains(PokemoniD, PokemonName, TypeName, PokemonGender, Ability, TrainerID )
-// (PK is PokemoniD, PokemonName UNIQUE,  TypeName FK)
-// can update any number of non-pk
-async function updateTable(id, updates) {
-    return await withOracleDB(async (connection) => {
-        const update = [];
-        const bindVars = { id }; // pk
-
-        if (updates.name) {
-            update.push("PokemonName = :name");
-            bindVars.name = updates.name;
-        }
-        if (updates.type) {
-            update.push("TypeName = :type");
-            bindVars.type = updates.type;
-        }
-        if (updates.gender) {
-            update.push("PokemonGender = :gender");
-            bindVars.gender = updates.gender;
-        }
-        if (updates.ability) {
-            update.push("Ability = :ability");
-            bindVars.ability = updates.ability;
-        }
-        if (updates.trainerID) {
-            update.push("TrainerID = :trainerID");
-            bindVars.trainerID = updates.trainerID;
-        }
-
-        if (update.length === 0) {
-            console.error("no new update");
-            return false;
-        }
-
-        const sql = ` UPDATE PokemonTrains 
-                      SET ${update.join(', ')} 
-                      WHERE PokemonID = :id`;
-
-        const result = await connection.execute(sql, bindVars, { autoCommit: true });
-
-        return result.rowsAffected && result.rowsAffected > 0;
-    }).catch((err) => {
-        console.error("Update failed:", err.message);
-        return false;
-    });
-}
-
-
-async function deleteID(id) {
-    return await withOracleDB(async (connection) => {
-        const result = await connection.execute(
-            `DELETE FROM PokemonTrains WHERE PokemonID = :id`,
-            [id],
-            { autoCommit: true }
-        );
-        return result.rowsAffected && result.rowsAffected > 0;
-    }).catch(() => {
-        return false;
-    });
-}
-
-// select attributes
-// function buildSelectClause(attributes) {
-//     if (!attributes || attributes.length === 0) {
-//         return '*';
-//     }
-//     return attributes.join(', ');
-// }
-
-// apply conditions
-// function buildWhereClause(conditions) {
-//     if(!conditions || conditions.length === 0) {
-//         return { clause: '', binds: {} };
-//     }
-//     var clause = 'WHERE';
-//     var binds = {};
-
-//     for (var i = 0; i < conditions.length; i++) {
-//         var cond = conditions[i];
-//         var bindName = 'val' + i;
-        
-//         clause += cond.attribute + ' ' + cond.operator + ' :' + bindName;
-//         binds[bindName] = cond.value;
-//     }
-
-
-//     return {clause: clause, binds: binds };
-// }
-
-
-
-// async function filterTable(attribute, condition) {
-//     const selectClause = buildSelectClause(attribute);
-//     const whereData = buildWhereClause(condition);
-//     const whereClause = whereData.clause;
-//     const binds = whereData.binds;
-//     const query = `SELECT ${selectClause} FROM PokemonTrains p JOIN PokemonType t ON p.TypeName = t.TypeName
-//     ${whereClause}`;
-//     console.log(query);
-
-//     return await withOracleDB(async (connection) => {
-//         const result = await connection.execute(query,binds);
-//         console.log(result.rows)
-//         return result.rows;
-//     }).catch(() => {
-//         return false;
-//     });
-// }
-
-function buildSelectClause(attributes) {
-    if (!attributes || attributes.length === 0) {
-        return '*';
-    }
-    return attributes.join(', ');
-}
-
-
-
-async function filterTable(attribute, whereClause) {
-    const selectClause = buildSelectClause(attribute);
-    const query = `SELECT ${selectClause} FROM PokemonTrains p JOIN PokemonType t ON p.TypeName = t.TypeName
-    WHERE ${whereClause}`;
-    console.log(query)
-    return await withOracleDB(async (connection) => {
-        const result = await connection.execute(
-            query
-        );
-        console.log(result.rows)
-        return result.rows;
-    }).catch(() => {
-        return false;
-    });
-}
-
-
-
-async function trainerSearch(trainerID) {
-    return await withOracleDB(async (connection) => {
-        const result = await connection.execute(
-            `SELECT t.TrainerID, t.TrainerName, p.PokemonID, p.PokemonName
-FROM Trainer t
-JOIN PokemonTrains p ON t.TrainerID = p.TrainerID
-WHERE t.TrainerID=:trainerID`,
-            [trainerID],
-            { autoCommit: true }
-        );
-        console.log("AAAAAAAAAAAAAAAA", result, trainerID)
-        return result.rows;
-    }).catch(() => {
-        return false;
-    });
-}
 
 
 
@@ -423,5 +367,6 @@ module.exports = {
     trainerSearch,
     filterTable,
     buildSelectClause,
-    deleteID
+    deleteID,
+    projection
 }
