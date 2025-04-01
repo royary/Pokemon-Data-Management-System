@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Projection Query - Pokémon</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="card">
+        <h2>Projection Query</h2>
+        <form id="projectionForm">
+            <label for="attributes">Select Attributes:</label><br/>
+            <input type="checkbox" name="attribute" value="PokemonID"> PokemonID
+            <input type="checkbox" name="attribute" value="PokemonName"> Name
+            <input type="checkbox" name="attribute" value="TypeName"> Type
+            <input type="checkbox" name="attribute" value="PokemonGender"> Gender
+            <input type="checkbox" name="attribute" value="Ability"> Ability
+            <input type="checkbox" name="attribute" value="TrainerID"> TrainerID
+            <br><br>
+            <button type="submit">Run Projection</button>
+        </form>
+        <br>
+        <div id="projectionResult"></div>
+        <table id="projectionTable" border="1" style="display: none;">
+            <thead></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <script src="projection.js"></script>
+</body>
+</html>
