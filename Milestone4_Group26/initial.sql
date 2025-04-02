@@ -153,7 +153,7 @@ INSERT ALL
     INTO BeginningTrainer (TrainerID, PrimarySkill) VALUES ('12', NULL)
     INTO BeginningTrainer (TrainerID, PrimarySkill) VALUES ('13', 'Stealth')
     INTO BeginningTrainer (TrainerID, PrimarySkill) VALUES ('14', NULL)
-SELECT * FROM dual
+SELECT * FROM dual;
 
 CREATE TABLE AdvancedTrainer (
     TrainerID VARCHAR(20),
@@ -337,4 +337,4 @@ INSERT ALL
     INTO Location (LocationID, LocationName, Region) VALUES ('0091', 'Route 29', 'Johto')
     INTO Location (LocationID, LocationName, Region) VALUES ('0021', 'Route 30', 'Kyoto')
     INTO Location (LocationID, LocationName, Region) VALUES ('0351', 'Route 1', 'Unova')
-
+SELECT * FROM dual;
