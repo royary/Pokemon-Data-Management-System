@@ -89,10 +89,10 @@ router.get("/trainer-search/:trainerId", async (req, res) => {
     }
 });
 
-router.post("/insert-demotable", async (req, res) => {
+router.post("/insertPokemonTrainstable", async (req, res) => {
     const {id, name, type, gender, ability, trainer} = req.body;
     console.log("I'm here");
-    const insertResult = await appService.insertDemotable(id, name, type, gender, ability, trainer);
+    const insertResult = await appService.insertPokemonTrainstable(id, name, type, gender, ability, trainer);
     if(insertResult) {
         res.json({success: true});
     }else {
@@ -134,6 +134,16 @@ router.post("/projection", async (req, res) => {
     }
    
 });
+
+router.post("/insertShowsTable",async(req,res) => {
+    const {PokemonID,StatsID} = req.body;
+    const insertResult = await appService.insertShowsTable(PokemonID,StatsID);
+    if(insertResult) {
+        res.json({success:true,data:insertResult});
+    } else {
+        res.status(500).json({success: false});
+    }
+})
 
 
 module.exports = router;

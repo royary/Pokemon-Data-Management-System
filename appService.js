@@ -112,18 +112,17 @@ async function initiateDemotable() {
     });
 }
 
-// Query 1 : Insert
-// Insert one tuple to the Pokemon(TrainsPokemoniD, PokemonName, TypeName, PokemonGender, Ability, TrainerID )
-// Handling the foriegn key : Typename
-async function insertDemotable(id, name, type, gender, ability, trainer) {
+// Query 1 : Insert (1)
+// Insert a tuple into PokemonTrains (PokemonID, PokemonName, TypeName, PokemonGender, Ability, TrainerID)
+// Handles the foreign key TypeName: rejects insertion if TypeName doesn't exist.
+async function insertPokemonTrainstable(id, name, type, gender, ability, trainer) {
     return await withOracleDB(async (connection) => {
-        // Handle FK, when FK does not exist, reject it.
-        const trainerCheck = await connection.execute(
+        const typeCheck = await connection.execute(
             `SELECT TypeName FROM PokemonType WHERE TypeName = :type`,
             [type]
         );
 
-        if (trainerCheck.rows.length === 0) {
+        if (typeCheck.rows.length === 0) {
             console.error("Error: TypeName does not exist");
             throw new Error("TypeName does not exist");
         }
@@ -139,11 +138,46 @@ async function insertDemotable(id, name, type, gender, ability, trainer) {
     });
 }
 
+// Insert (2)
+// Insert a tuple to Shows(PokemonID,StatsID)
+// Handles the foreign key PokemonID and StatsID: rejects insertion if PokemonID and StatsID doesn't exist.
+async function insertShowsTable(PokemonID,StatsID) {
+    return await withOracleDB(async (connection) => {
+        const pokemonCheck = await connection.execute(
+           `SELECT PokemonID FROM PokemonTrains WHERE PokemonID = :PokemonID`,
+            [PokemonID] 
+        );
+        
+        if (pokemonCheck.rows.length === 0) {
+            console.error("Error: PokemonID does not exist");
+            throw new Error("PokemonID does not exist");
+        }
+
+        const statsCheck = await connection.execute(
+            `SELECT StatsID FROM Stats WHERE StatsID = :StatsID`,
+            [StatsID] 
+        );
+        if (statsCheck.rows.length === 0) {
+            console.error("Error: StatsID does not exist");
+            throw new Error("StatsID does not exist");
+        }
+
+        const showsTable = await connection.execute (
+            'INSERT INTO Shows(PokemonID,StatsID) VALUES (:PokemonID,:StatsID)',
+            [PokemonID, StatsID],
+            { autoCommit: true }
+        );
+        return showsTable.rowsAffected && showsTable.rowsAffected > 0;
+
+    }).catch(() => {
+        return false;
+    });
+}
+
 
 // Query 2 : Update
-// Update the table PokemonTrains(PokemoniD, PokemonName, TypeName, PokemonGender, Ability, TrainerID )
-// (PK is PokemoniD, PokemonName UNIQUE,  TypeName FK)
-// can update any number of non-pk
+// Update a tuple in PokemonTrains by PokemonID (PK).
+// Updates any combination of non-PK fields: PokemonName, TypeName, PokemonGender, Ability, TrainerID.
 async function updateTable(id, updates) {
     return await withOracleDB(async (connection) => {
         const update = [];
@@ -189,8 +223,7 @@ async function updateTable(id, updates) {
 }
 
 // Query 3 : Delete
-// Delete a specific tuple in PokemonTrains(PokemonID, PokemonName, TypeName, PokemonGender, Ability, TrainerID )
-// by specify the PK PokemonID
+// Delete a tuple from PokemonTrains by PokemonID (PK)
 async function deleteID(id) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
@@ -224,7 +257,7 @@ async function filterTable(attribute, whereClause) {
         const result = await connection.execute(
             query
         );
-        console.log(result.rows)
+        console.log(result.rows);
         return result.rows;
     }).catch(() => {
         return false;
@@ -232,17 +265,15 @@ async function filterTable(attribute, whereClause) {
 }
 
 // Query 5 : projection
-// project any number of attributes of PokemonTrains Table
+// Project any number of attributes from the PokemonTrains table joined with PokemonType
 async function projection(attribute) {
     const attributes = (!attribute || attribute.length === 0) ? '*' : attribute.join(',');
 
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
-            `SELECT ${attributes}
-            FROM PokemonTrains p JOIN PokemonType t ON p.TypeName = t.TypeName`,
-            { autoCommit: true }
+            `SELECT ${attributes} FROM PokemonTrains p `,
         );
-        console.log("AAAAAAAAAAAAAAAA", result, trainerID)
+        console.log("Projection result:", result.rows);
         return result.rows;
     }).catch(() => {
         return false;
@@ -250,18 +281,18 @@ async function projection(attribute) {
 }
 
 // Query 6 : join
-// joins the Trainer and PokemonTrains tables to find all Pokemon trained by a specific trainer, based on the trainer's ID.
+// Join Trainer and PokemonTrains to find all Pokemon trained by a specific trainer
 async function trainerSearch(trainerID) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
             `SELECT t.TrainerID, t.TrainerName, p.PokemonID, p.PokemonName
-FROM Trainer t
-JOIN PokemonTrains p ON t.TrainerID = p.TrainerID
-WHERE t.TrainerID=:trainerID`,
+            FROM Trainer t
+            JOIN PokemonTrains p ON t.TrainerID = p.TrainerID
+            WHERE t.TrainerID=:trainerID`,
             [trainerID],
-            { autoCommit: true }
         );
-        console.log("AAAAAAAAAAAAAAAA", result, trainerID)
+        console.log(`Searching for TrainerID: ${trainerID}`);
+        console.log("Trainer-Pokemon join result:", result.rows);
         return result.rows;
     }).catch(() => {
         return false;
@@ -269,15 +300,16 @@ WHERE t.TrainerID=:trainerID`,
 }
 
 
-//Query 7: Aggregation with GROUP BY
-//average attack per pokemon type
+// Query 7: Aggregation with GROUP BY
+// Get average attack value grouped by TypeName
 async function getAverageAttackByType() {
     return await withOracleDB(async (connection) => {
-        const result = await connection.execute(`SELECT p.TypeName, AVG(s.Attack) AS AvgAttack
-FROM PokemonTrains p
-JOIN Shows sh ON p.PokemonID = sh.PokemonID
-JOIN Stats s ON sh.StatsID = s.StatsID
-GROUP BY p.TypeName
+        const result = await connection.execute(
+            `SELECT p.TypeName, AVG(s.Attack) AS AvgAttack
+            FROM PokemonTrains p
+            JOIN Shows sh ON p.PokemonID = sh.PokemonID
+            JOIN Stats s ON sh.StatsID = s.StatsID
+            GROUP BY p.TypeName
 `);
         return result.rows;
     }).catch((err) => {
@@ -286,16 +318,17 @@ GROUP BY p.TypeName
     });
 }
 
-//Query 8: Aggregation with HAVING
-//types with average defense greater than 10
+// Query 8: Aggregation with HAVING
+// Get TypeNames with average defense > 10
 async function getHighDefenseTable() {
     return await withOracleDB(async (connection) => {
-        const result = await connection.execute(`SELECT p.TypeName, AVG(s.Defense) AS AvgDefense
-FROM PokemonTrains p
-JOIN Shows sh ON p.PokemonID = sh.PokemonID
-JOIN Stats s ON sh.StatsID = s.StatsID
-GROUP BY p.TypeName
-HAVING AVG(s.Defense) > 10
+        const result = await connection.execute(
+            `SELECT p.TypeName, AVG(s.Defense) AS AvgDefense
+            FROM PokemonTrains p
+            JOIN Shows sh ON p.PokemonID = sh.PokemonID
+            JOIN Stats s ON sh.StatsID = s.StatsID
+            GROUP BY p.TypeName
+            HAVING AVG(s.Defense) > 10
 `);
         return result.rows;
     }).catch((err) => {
@@ -304,20 +337,20 @@ HAVING AVG(s.Defense) > 10
     });
 }
 
-//Query 9: Nested Aggregation with GROUP BY
-//find trainerName with Pokemon stats larger than average stats
+// Query 9: Nested Aggregation with GROUP BY
+// Get trainer names whose Pokemon have above-average total stats
 async function strongTrainersTable() {
     return await withOracleDB(async (connection) => {
-        const result = await connection.execute(`SELECT t.TrainerName, AVG(s.HP + s.Attack + s.Defense + s.SpecialAttack + s.SpecialDefense + s.Speed) AS AvgTotalStats
-FROM Trainer t
-JOIN PokemonTrains pt ON t.TrainerID = pt.TrainerID
-JOIN Shows sh ON pt.PokemonID = sh.PokemonID
-JOIN Stats s ON sh.StatsID = s.StatsID
-GROUP BY t.TrainerName
-HAVING AVG(s.HP + s.Attack + s.Defense + s.SpecialAttack + s.SpecialDefense + s.Speed) > (
-    SELECT AVG(HP + Attack + Defense + SpecialAttack + SpecialDefense + Speed)
-    FROM Stats
-)
+        const result = await connection.execute(
+            `SELECT t.TrainerName, AVG(s.HP + s.Attack + s.Defense + s.SpecialAttack + s.SpecialDefense + s.Speed) AS AvgTotalStats
+            FROM Trainer t
+            JOIN PokemonTrains pt ON t.TrainerID = pt.TrainerID
+            JOIN Shows sh ON pt.PokemonID = sh.PokemonID
+            JOIN Stats s ON sh.StatsID = s.StatsID
+            GROUP BY t.TrainerName
+            HAVING AVG(s.HP + s.Attack + s.Defense + s.SpecialAttack + s.SpecialDefense + s.Speed) > (
+            SELECT AVG(HP + Attack + Defense + SpecialAttack + SpecialDefense + Speed)
+            FROM Stats)
 `);
         return result.rows;
     }).catch((err) => {
@@ -326,20 +359,20 @@ HAVING AVG(s.HP + s.Attack + s.Defense + s.SpecialAttack + s.SpecialDefense + s.
     });
 }
 
-//Query 10: Division
-//trainers who own at least one pokemon from every category
+// Query 10: Division
+// Get trainers who own at least one Pokemon from every category
 async function allCategoriesTrainersTable() {
     return await withOracleDB(async (connection) => {
-        const result = await connection.execute(`SELECT t.TrainerName
-FROM Trainer t
-WHERE NOT EXISTS (
-   SELECT c.CategoryName FROM Category c
-    MINUS 
-    SELECT b.CategoryName
-    FROM BelongsTo b
-    JOIN PokemonTrains pt ON b.PokemonID = pt.PokemonID
-    WHERE pt.TrainerID = t.TrainerID
-)
+        const result = await connection.execute(
+            `SELECT t.TrainerName
+            FROM Trainer t
+            WHERE NOT EXISTS (
+            SELECT c.CategoryName FROM Category c
+            MINUS 
+            SELECT b.CategoryName
+            FROM BelongsTo b
+            JOIN PokemonTrains pt ON b.PokemonID = pt.PokemonID
+            WHERE pt.TrainerID = t.TrainerID)
 `);
         return result.rows;
     }).catch((err) => {
@@ -353,9 +386,11 @@ WHERE NOT EXISTS (
 
 module.exports = {
     initiateDemotable,
-    updateTable,
     fetchDemotableFromDb,
-    insertDemotable,
+    insertPokemonTrainstable,
+    insertShowsTable,
+    updateTable,
+    projection,
     getAverageAttackByType,
     getHighDefenseTable,
     strongTrainersTable,
@@ -363,6 +398,5 @@ module.exports = {
     trainerSearch,
     filterTable,
     buildSelectClause,
-    deleteID,
-    projection
+    deleteID
 }
