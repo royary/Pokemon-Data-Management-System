@@ -265,7 +265,7 @@ async function filterTable(attribute, whereClause) {
 }
 
 // Query 5 : projection
-// Project any number of attributes from the PokemonTrains table joined with PokemonType
+// Project any number of attributes from the PokemonTrains table
 async function projection(attribute) {
     const attributes = (!attribute || attribute.length === 0) ? '*' : attribute.join(',');
 
