@@ -88,7 +88,7 @@ async function initiateDemotable() {
     return await withOracleDB(async (connection) => {
         try {
             const createTableScript = fs.readFileSync(
-                path.join(__dirname, '/SQL/createTableScript.sql'),
+                path.join(__dirname, 'Milestone4_Group26', 'initial.sql'),
                 'utf8'
             );
 

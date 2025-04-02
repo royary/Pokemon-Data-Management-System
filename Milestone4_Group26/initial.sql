@@ -168,7 +168,7 @@ INSERT ALL
     INTO AdvancedTrainer (TrainerID, AdvancedSkill) VALUES ('4', 'Perception')
     INTO AdvancedTrainer (TrainerID, AdvancedSkill) VALUES ('5', 'Medicine')
     INTO AdvancedTrainer (TrainerID, AdvancedSkill) VALUES ('6', 'Command')
-SELECT * FROM dual
+SELECT * FROM dual;
 
 CREATE TABLE Category (
     CategoryName VARCHAR(20) PRIMARY KEY,
@@ -282,7 +282,7 @@ CREATE TABLE RegionTypeBadge (
 );
 
 INSERT ALL
-    INTO RegionTypeBadge (Region, Type, Badge) VALUES ('Kanto', 'Rock', 'Boulder Badge'),
+    INTO RegionTypeBadge (Region, Type, Badge) VALUES ('Kanto', 'Rock', 'Boulder Badge')
     INTO RegionTypeBadge (Region, Type, Badge) VALUES ('Kanto', 'Water', 'Cascade Badge')
     INTO RegionTypeBadge (Region, Type, Badge) VALUES ('Hoenn', 'Rock', 'Stone Badge')
     INTO RegionTypeBadge (Region, Type, Badge) VALUES ('Unova', 'Grass', 'Trio Badge')
@@ -328,7 +328,7 @@ CREATE TABLE Location (
     LocationID VARCHAR(20) PRIMARY KEY,
     LocationName VARCHAR(20) NOT NULL,
     Region VARCHAR(20) NOT NULL UNIQUE
-)
+);
 
 INSERT ALL
     INTO Location (LocationID, LocationName, Region) VALUES ('0001', 'Route 1', 'Kanto')
