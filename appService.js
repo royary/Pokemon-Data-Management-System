@@ -72,6 +72,18 @@ async function fetchDemotableFromDb() {
     });
 }
 
+async function fetchStatFromDb() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(`SELECT p.PokemonID, p.PokemonName, s.HP, s.Attack, s.Defense, s.SpecialAttack, s.SpecialDefense, s.Speed
+            FROM PokemonTrains p
+            JOIN Shows sh ON p.PokemonID = sh.PokemonID
+            JOIN Stats s ON sh.StatsID = s.StatsID`);
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
 async function initiateDemotable() {
     return await withOracleDB(async (connection) => {
         try {
@@ -398,5 +410,6 @@ module.exports = {
     trainerSearch,
     filterTable,
     buildSelectClause,
-    deleteID
+    deleteID,
+    fetchStatFromDb
 }

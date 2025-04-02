@@ -145,5 +145,14 @@ router.post("/insertShowsTable",async(req,res) => {
     }
 })
 
+router.get('/viewStats', async (req, res) => {
+    const tableContent = await appService.fetchStatFromDb();
+    if (tableContent) {
+        res.json({ success: true, data: tableContent });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
 
 module.exports = router;

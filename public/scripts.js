@@ -31,6 +31,29 @@ async function fetchAndDisplayUsers() {
     });
 }
 
+async function fetchAndDisplayStats() {
+    const tableElement = document.getElementById('viewStatsTable');
+    const tableBody = tableElement.querySelector('tbody');
+
+    const response = await fetch('/viewStats', {
+        method: 'GET'
+    });
+    const responseData = await response.json();
+    const statTableContent = responseData.data;
+
+    if(tableBody) {
+        tableBody.innerHTML = '';
+    }
+
+    statTableContent.forEach(rowData => {
+        const row = tableBody.insertRow();
+        rowData.forEach((field, index) => {
+            const cell = row.insertCell(index);
+            cell.textContent = field;
+        });
+    });
+}
+
 async function resetDemotable(){
 const response = await fetch('/initiate-demotable', {
     method: 'POST'
@@ -163,6 +186,7 @@ trainerSearch.addEventListener('click', function() {
 
 window.onload = function() {
     fetchAndDisplayUsers();
+    fetchAndDisplayStats();
     console.log("I'm refreshing!!!")
 
 }
