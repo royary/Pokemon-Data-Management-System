@@ -271,8 +271,8 @@ async function projection(attribute) {
 
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
-            `SELECT ${attributes} FROM PokemonTrains p `,
-        );
+            `SELECT ${attributes} FROM PokemonTrains p 
+            JOIN PokemonType t ON p.TypeName = t.TypeName`)
         console.log("Projection result:", result.rows);
         return result.rows;
     }).catch(() => {

@@ -2,30 +2,62 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Projection Query - Pokémon</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projection System</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .condition-group {
+            background-color: #f0f0f0;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+        .condition {
+            margin: 10px 0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .group-operator {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #e0e0e0;
+            text-align: center;
+            font-weight: bold;
+        }
+        select, input {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        .add-buttons {
+            margin: 15px 0;
+        }
+    </style>
 </head>
-<body>
-    <div class="card">
-        <h2>Projection Query</h2>
-        <form id="projectionForm">
-            <label for="attributes">Select Attributes:</label><br/>
-            <input type="checkbox" name="attribute" value="PokemonID"> PokemonID
-            <input type="checkbox" name="attribute" value="PokemonName"> Name
-            <input type="checkbox" name="attribute" value="TypeName"> Type
-            <input type="checkbox" name="attribute" value="PokemonGender"> Gender
-            <input type="checkbox" name="attribute" value="Ability"> Ability
-            <input type="checkbox" name="attribute" value="TrainerID"> TrainerID
-            <br><br>
-            <button type="submit">Run Projection</button>
-        </form>
-        <br>
-        <div id="projectionResult"></div>
-        <table id="projectionTable" border="1" style="display: none;">
-            <thead></thead>
-            <tbody></tbody>
-        </table>
+    <!-- Projection Implementation -->
+    <div class="container">
+        <div class="card">
+     <div class="projection-controls" id="projection-controls">
+        <h3>Select Attributes to Display:</h3>
+        <div>
+            <label><input type="checkbox" name="projectionAttributes" value="p.PokemonID" checked> PokemonID</label>
+            <label><input type="checkbox" name="projectionAttributes" value="t.TypeName" checked> TypeName</label>
+            <label><input type="checkbox" name="projectionAttributes" value="p.Ability" checked> Ability</label>
+            <label><input type="checkbox" name="projectionAttributes" value="t.Weakness" checked> Weakness</label>
+            <label><input type="checkbox" name="projectionAttributes" value="t.Resistance" checked> Resistance</label>
+            <label><input type="checkbox" name="projectionAttributes" value="t.Strength" checked> Strength</label>
+        </div>
+        <button class="button" onclick="performSearch()">Apply</button>
+        <button class="button" onclick="window.location.href='/'">Back to Home</button>
+        <div style="margin-top: 20px;">
+            <div id="resultsContainer" style="display: none; white-space: pre-line; font-family: monospace;"></div>
+        </div>
+         <div id="searchResultMsg"></div>
     </div>
+</div>
+<div>
+
     <script src="projection.js"></script>
 </body>
 </html>

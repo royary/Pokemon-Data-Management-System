@@ -339,3 +339,8 @@ deleteButton.addEventListener('click', function() {
         deleteTableID.style.display = 'none';
     }
 })
+
+const projectionButton = document.getElementById('projectionButton');
+projectionButton.addEventListener('click', function() {
+    window.location.href = '/projection.html';
+})
