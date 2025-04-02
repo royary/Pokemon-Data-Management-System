@@ -112,8 +112,6 @@ function buildWhereClause() {
 }
 
 
-
-
 function getProjectionAttribute(){
     //input = target <input> tags only
     //[name="projectionAttributes"] = only inputs with that specific name
