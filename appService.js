@@ -74,11 +74,16 @@ async function fetchDemotableFromDb() {
 
 async function fetchStatFromDb() {
     return await withOracleDB(async (connection) => {
-        const result = await connection.execute(`SELECT p.PokemonID, p.PokemonName, s.HP, s.Attack, s.Defense, s.SpecialAttack, s.SpecialDefense, s.Speed
-            FROM PokemonTrains p
-            JOIN Shows sh ON p.PokemonID = sh.PokemonID
-            JOIN Stats s ON sh.StatsID = s.StatsID`);
-        return result.rows;
+        try {
+            const result = await connection.execute(`SELECT p.PokemonID, p.PokemonName, s.HP, s.Attack, s.Defense, s.SpecialAttack, s.SpecialDefense, s.Speed
+                FROM PokemonTrains p
+                JOIN Shows sh ON p.PokemonID = sh.PokemonID
+                JOIN Stats s ON sh.StatsID = s.StatsID`);
+            return result.rows;
+        } catch (err) {
+            console.error("fetchStatFromDb error:", err);
+            throw err;
+        }
     }).catch(() => {
         return [];
     });
@@ -129,15 +134,15 @@ async function initiateDemotable() {
 // Handles the foreign key TypeName: rejects insertion if TypeName doesn't exist.
 async function insertPokemonTrainstable(id, name, type, gender, ability, trainer) {
     // Sanitization
-    if (!Number.isInteger(id) || id <= 0) {
+    if (typeof id !== "string" || !/^\d+$/.test(id) || id.length < 0) {
         console.error("Invalid Pokemon ID");
         return false;
     }
-    if (typeof name !== "string" || name.trim() === "" || name.length > 50) {
+    if (typeof name !== "string" || name.trim() === "" || name.length > 10) {
         console.error("Invalid Pokemon Name");
         return false;
     }
-    if (typeof type !== "string" || type.trim() === "" || type.length > 30) {
+    if (typeof type !== "string" || type.trim() === "" || type.length > 10) {
         console.error("Invalid TypeName");
         return false;
     }
@@ -149,7 +154,7 @@ async function insertPokemonTrainstable(id, name, type, gender, ability, trainer
         console.error("Invalid Ability");
         return false;
     }
-    if (!Number.isInteger(trainer) || trainer <= 0) {
+    if (typeof trainer !== "string" || !/^\d+$/.test(trainer) || trainer.length < 0) {
         console.error("Invalid Trainer ID");
         return false;
     }
@@ -273,6 +278,10 @@ async function updateTable(id, updates) {
 // Query 3 : Delete
 // Delete a tuple from PokemonTrains by PokemonID (PK)
 async function deleteID(id) {
+    if (typeof id !== "string" || !/^\d+$/.test(id)) {
+        console.error("Invalid Pokemon ID");
+        return false;
+    }
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
             `DELETE FROM PokemonTrains WHERE PokemonID = :id`,
