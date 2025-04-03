@@ -89,6 +89,17 @@ router.get("/trainer-search/:trainerId", async (req, res) => {
     }
 });
 
+router.post("/insert-demotable", async (req, res) => {
+    const {id, name, type, gender, ability, trainer} = req.body;
+    console.log("I'm here");
+    const insertResult = await appService.insertDemotable(id, name, type, gender, ability, trainer);
+    if(insertResult) {
+        res.json({success: true});
+    }else {
+        res.status(500).json({success: false});
+    }
+});   
+
 router.post("/insertPokemonTrainstable", async (req, res) => {
     const {id, name, type, gender, ability, trainer} = req.body;
     console.log("I'm here");

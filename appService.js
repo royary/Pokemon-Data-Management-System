@@ -100,7 +100,7 @@ async function initiateDemotable() {
                     if (!statement.endsWith("END;")) {
                         statement += "END;";
                     }
-                    // console.log("stat:", statement);
+                    console.log("stat:", statement);
                     await connection.execute(statement, [], { autoCommit: true });
                 } else {
                     const substatements = statement.split(';').map(sub => sub.trim()).filter(sub => sub.length > 0);
@@ -273,10 +273,6 @@ async function updateTable(id, updates) {
 // Query 3 : Delete
 // Delete a tuple from PokemonTrains by PokemonID (PK)
 async function deleteID(id) {
-    if (!Number.isInteger(id) || id <= 0) {
-        console.error("Invalid Pokemon ID");
-        return false;
-    }
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
             `DELETE FROM PokemonTrains WHERE PokemonID = :id`,
@@ -438,7 +434,18 @@ async function allCategoriesTrainersTable() {
 }
 
 
-
+async function insertDemotable(id, name, type, gender, ability, trainer) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `INSERT INTO PokemonTrains (PokemonID, PokemonName, TypeName, PokemonGender, Ability, TrainerID) VALUES (:id, :name, :type, :gender, :ability, :trainer)`,
+            [id, name, type, gender, ability, trainer],
+            { autoCommit: true }
+        );
+        return result.rowsAffected && result.rowsAffected > 0;
+    }).catch(() => {
+        return false;
+    });
+}
 
 module.exports = {
     initiateDemotable,
@@ -455,5 +462,6 @@ module.exports = {
     filterTable,
     buildSelectClause,
     deleteID,
-    fetchStatFromDb
+    fetchStatFromDb,
+    insertDemotable
 }
