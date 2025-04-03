@@ -340,7 +340,8 @@ async function projection(attribute) {
 // Query 6 : join
 // Join Trainer and PokemonTrains to find all Pokemon trained by a specific trainer
 async function trainerSearch(trainerID) {
-    if (!Number.isInteger(trainerID) || trainerID <= 0) {
+    const numericID = Number(trainerID);
+    if (!Number.isInteger(numericID) || numericID <= 0) {
         console.error("Invalid Trainer ID");
         return false;
     }
@@ -350,7 +351,7 @@ async function trainerSearch(trainerID) {
             FROM Trainer t
             JOIN PokemonTrains p ON t.TrainerID = p.TrainerID
             WHERE t.TrainerID=:trainerID`,
-            [trainerID],
+            [String(trainerID)],
         );
         console.log(`Searching for TrainerID: ${trainerID}`);
         console.log("Trainer-Pokemon join result:", result.rows);
