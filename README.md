@@ -47,13 +47,6 @@ The application will be available at `http://localhost:<PORT>`.
 - `appController.js` - Application controllers
 - `server.js` - Express server configuration
 
-## Database Operations
-
-The application supports various database operations including:
-- Selection (filtering)
-- Projection (attribute selection)
-- Join operations (trainer-pokemon relationships)
-
 ## Technologies Used
 
 - Frontend: HTML, CSS, JavaScript
