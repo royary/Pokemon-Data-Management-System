@@ -35,36 +35,6 @@ BEGIN
     EXECUTE IMMEDIATE 'DROP TABLE InTeam CASCADE CONSTRAINTS';
 EXCEPTION WHEN OTHERS THEN NULL; END;
 /
-BEGIN  
-    EXECUTE IMMEDIATE 'DROP TABLE Gym CASCADE CONSTRAINTS';
-EXCEPTION WHEN OTHERS THEN NULL; END;
-/
-BEGIN  
-    EXECUTE IMMEDIATE 'DROP TABLE RegionTypeBadge CASCADE CONSTRAINTS';
-EXCEPTION WHEN OTHERS THEN NULL; END;
-/
-BEGIN  
-    EXECUTE IMMEDIATE 'DROP TABLE GymLeader CASCADE CONSTRAINTS';
-EXCEPTION WHEN OTHERS THEN NULL; END;
-/
-BEGIN 
-    EXECUTE IMMEDIATE 'DROP TABLE BeginningTrainer CASCADE CONSTRAINTS';
-EXCEPTION WHEN OTHERS THEN NULL; END;
-/
-BEGIN 
-    EXECUTE IMMEDIATE 'DROP TABLE AdvancedTrainer CASCADE CONSTRAINTS';
-EXCEPTION WHEN OTHERS THEN NULL; END;
-/
-BEGIN 
-    EXECUTE IMMEDIATE 'DROP TABLE EvolutionCan CASCADE CONSTRAINTS';
-EXCEPTION WHEN OTHERS THEN NULL; END;
-END;
-/
-BEGIN 
-    EXECUTE IMMEDIATE 'DROP TABLE Location CASCADE CONSTRAINTS';
-EXCEPTION WHEN OTHERS THEN NULL; END;
-END;
-/
 
 
 CREATE TABLE PokemonType (
@@ -151,36 +121,7 @@ INSERT ALL
     INTO Trainer (TrainerID, TrainerName, TrainerGender) VALUES ('10', 'Alex', 'F')
 SELECT * FROM dual;
 
-CREATE TABLE BeginningTrainer (
-    TrainerID VARCHAR(20),
-    PrimarySkill VARCHAR(20),
-    PRIMARY KEY (TrainerID)
-);
 
-
-INSERT ALL
-    INTO BeginningTrainer (TrainerID, PrimarySkill) VALUES ('8', 'Combat')
-    INTO BeginningTrainer (TrainerID, PrimarySkill) VALUES ('10', NULL)
-    INTO BeginningTrainer (TrainerID, PrimarySkill) VALUES ('11', 'Survival')
-    INTO BeginningTrainer (TrainerID, PrimarySkill) VALUES ('12', NULL)
-    INTO BeginningTrainer (TrainerID, PrimarySkill) VALUES ('13', 'Stealth')
-    INTO BeginningTrainer (TrainerID, PrimarySkill) VALUES ('14', NULL)
-SELECT * FROM dual;
-
-CREATE TABLE AdvancedTrainer (
-    TrainerID VARCHAR(20),
-    AdvancedSkill VARCHAR(20) NOT NULL,
-    PRIMARY KEY (TrainerID)
-);
-
-INSERT ALL
-    INTO AdvancedTrainer (TrainerID, AdvancedSkill) VALUES ('1', 'Charm')
-    INTO AdvancedTrainer (TrainerID, AdvancedSkill) VALUES ('2', 'Focus')
-    INTO AdvancedTrainer (TrainerID, AdvancedSkill) VALUES ('3', 'Intuition')
-    INTO AdvancedTrainer (TrainerID, AdvancedSkill) VALUES ('4', 'Perception')
-    INTO AdvancedTrainer (TrainerID, AdvancedSkill) VALUES ('5', 'Medicine')
-    INTO AdvancedTrainer (TrainerID, AdvancedSkill) VALUES ('6', 'Command')
-SELECT * FROM dual;
 
 CREATE TABLE Category (
     CategoryName VARCHAR(20) PRIMARY KEY,
@@ -249,7 +190,7 @@ INSERT ALL
     INTO PokemonTeam (TeamID, TeamName) VALUES ('0003', 'Gamma')
     INTO PokemonTeam (TeamID, TeamName) VALUES ('0004', 'Delta')
     INTO PokemonTeam (TeamID, TeamName) VALUES ('0005', 'Epsilon')
-    INTO PokemonTeam (TeamID, TeamName) VALUES ('0011', 'Doota')
+    INTO PokemonTeam (TeamID, TeamName) VALUES ('0006', 'Doota')
 SELECT * FROM dual;
 
 CREATE TABLE InTeam (
@@ -270,84 +211,3 @@ INSERT ALL
     INTO InTeam (TeamID, PokemonID) VALUES ('0005', '0025')
 SELECT * FROM dual;
 
-CREATE TABLE Gym (
-    GymName VARCHAR(20) PRIMARY KEY,
-    Badge VARCHAR(20) NOT NULL,
-    Region VARCHAR(20) NOT NULL
-);
-
-INSERT ALL 
-    INTO Gym (GymName, Badge, Region) VALUES ('Pewter Gym', 'Boulder Badge', 'Kanto')
-    INTO Gym (GymName, Badge, Region) VALUES ('Cerulean Gym', 'Cascade Badge', 'Kanto')
-    INTO Gym (GymName, Badge, Region) VALUES ('Nacrene Gym', 'Basic Badge', 'Unova')
-    INTO Gym (GymName, Badge, Region) VALUES ('Aspertia Gym', 'Basic Badge', 'Unova')
-    INTO Gym (GymName, Badge, Region) VALUES ('Hulbury Stadium', 'Water Badge', 'Galar')
-    INTO Gym (GymName, Badge, Region) VALUES ('Cascarrafa Gym', 'Water Badge', 'Paldea')
-    INTO Gym (GymName, Badge, Region) VALUES ('Striaton Gym', 'Trio Badge', 'Unova')
-    INTO Gym (GymName, Badge, Region) VALUES ('Fuchsia Gym', 'Soul Badge', 'Kanto')
-SELECT * FROM dual;
-
-CREATE TABLE RegionTypeBadge (
-    Region VARCHAR(20),
-    Type VARCHAR(20),
-    Badge VARCHAR(20) NOT NULL,
-    PRIMARY KEY (Region, Type)
-);
-
-INSERT ALL
-    INTO RegionTypeBadge (Region, Type, Badge) VALUES ('Kanto', 'Rock', 'Boulder Badge')
-    INTO RegionTypeBadge (Region, Type, Badge) VALUES ('Kanto', 'Water', 'Cascade Badge')
-    INTO RegionTypeBadge (Region, Type, Badge) VALUES ('Hoenn', 'Rock', 'Stone Badge')
-    INTO RegionTypeBadge (Region, Type, Badge) VALUES ('Unova', 'Grass', 'Trio Badge')
-    INTO RegionTypeBadge (Region, Type, Badge) VALUES ('Unova', 'Fire', 'Trio Badge')
-    INTO RegionTypeBadge (Region, Type, Badge) VALUES ('Unova', 'Normal', 'Basic Badge')
-SELECT * FROM dual;
-
-CREATE TABLE GymLeader (
-    LeaderName VARCHAR(20) PRIMARY KEY,
-    Type VARCHAR(20) NOT NULL,
-    GymName VARCHAR(20) NOT NULL,
-    FOREIGN KEY (GymName) REFERENCES Gym(GymName)
-);
-
-INSERT ALL
-    INTO GymLeader (LeaderName, Type, GymName) VALUES ('Cilan', 'Grass', 'Striaton Gym')
-    INTO GymLeader (LeaderName, Type, GymName) VALUES ('Chili', 'Fire', 'Striaton Gym')
-    INTO GymLeader (LeaderName, Type, GymName) VALUES ('Cress', 'Water', 'Striaton Gym')
-    INTO GymLeader (LeaderName, Type, GymName) VALUES ('Nessa', 'Water', 'Hulbury Stadium')
-    INTO GymLeader (LeaderName, Type, GymName) VALUES ('Koga', 'Poison', 'Fuchsia Gym')
-    INTO GymLeader (LeaderName, Type, GymName) VALUES ('Janine', 'Poison', 'Fuchsia Gym')
-SELECT * FROM dual;
-
-CREATE TABLE EvolutionCan (
-    EvolutionName VARCHAR(20),
-    Stage INTEGER,
-    PokemonID VARCHAR(20),
-    PRIMARY KEY (EvolutionName, PokemonID),
-    FOREIGN KEY (PokemonID) REFERENCES PokemonTrains(PokemonID) ON
-    DELETE CASCADE
-);
-
-INSERT ALL
-    INTO EvolutionCan (EvolutionName, Stage, PokemonID) VALUES ('Mega Venusaur', 1, '0003')
-    INTO EvolutionCan (EvolutionName, Stage, PokemonID) VALUES ('Gigantamax Venusaur', 2, '0003')
-    INTO EvolutionCan (EvolutionName, Stage, PokemonID) VALUES ('Mega Charizard X', 1, '0006')
-    INTO EvolutionCan (EvolutionName, Stage, PokemonID) VALUES ('Mega Charizard Y', 2, '0006')
-    INTO EvolutionCan (EvolutionName, Stage, PokemonID) VALUES ('Mega Charizard Z', 2, '0011')
-    INTO EvolutionCan (EvolutionName, Stage, PokemonID) VALUES ('Gigantamax Charizard', 3, '0006')
-SELECT * FROM dual;
-
-CREATE TABLE Location (
-    LocationID VARCHAR(20) PRIMARY KEY,
-    LocationName VARCHAR(20) NOT NULL,
-    Region VARCHAR(20) NOT NULL
-);
-
-INSERT ALL
-    INTO Location (LocationID, LocationName, Region) VALUES ('0001', 'Route 1', 'Kanto')
-    INTO Location (LocationID, LocationName, Region) VALUES ('0002', 'Route 2', 'Kanto')
-    INTO Location (LocationID, LocationName, Region) VALUES ('0090', 'Water Path', 'Kanto')
-    INTO Location (LocationID, LocationName, Region) VALUES ('0091', 'Route 29', 'Johto')
-    INTO Location (LocationID, LocationName, Region) VALUES ('0021', 'Route 30', 'Kyoto')
-    INTO Location (LocationID, LocationName, Region) VALUES ('0351', 'Route 1', 'Unova')
-SELECT * FROM dual;
