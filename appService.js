@@ -340,21 +340,16 @@ async function projection(attribute) {
 // Query 6 : join
 // Join Trainer and PokemonTrains to find all Pokemon trained by a specific trainer
 async function trainerSearch(trainerID) {
-    const numericID = Number(trainerID);
-    if (!Number.isInteger(numericID) || numericID <= 0) {
-        console.error("Invalid Trainer ID");
-        return false;
-    }
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
             `SELECT t.TrainerID, t.TrainerName, p.PokemonID, p.PokemonName
-            FROM Trainer t
-            JOIN PokemonTrains p ON t.TrainerID = p.TrainerID
-            WHERE t.TrainerID=:trainerID`,
-            [String(trainerID)],
+FROM Trainer t
+JOIN PokemonTrains p ON t.TrainerID = p.TrainerID
+WHERE t.TrainerID=:trainerID`,
+            [trainerID],
+            { autoCommit: true }
         );
-        console.log(`Searching for TrainerID: ${trainerID}`);
-        console.log("Trainer-Pokemon join result:", result.rows);
+        console.log("AAAAAAAAAAAAAAAA", result, trainerID)
         return result.rows;
     }).catch(() => {
         return false;
