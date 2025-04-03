@@ -128,6 +128,32 @@ async function initiateDemotable() {
 // Insert a tuple into PokemonTrains (PokemonID, PokemonName, TypeName, PokemonGender, Ability, TrainerID)
 // Handles the foreign key TypeName: rejects insertion if TypeName doesn't exist.
 async function insertPokemonTrainstable(id, name, type, gender, ability, trainer) {
+    // Sanitization
+    if (!Number.isInteger(id) || id <= 0) {
+        console.error("Invalid Pokemon ID");
+        return false;
+    }
+    if (typeof name !== "string" || name.trim() === "" || name.length > 50) {
+        console.error("Invalid Pokemon Name");
+        return false;
+    }
+    if (typeof type !== "string" || type.trim() === "" || type.length > 30) {
+        console.error("Invalid TypeName");
+        return false;
+    }
+    if (!["M", "F", "F/M"].includes(gender)) {
+        console.error("Invalid Gender");
+        return false;
+    }
+    if (typeof ability !== "string" ) {
+        console.error("Invalid Ability");
+        return false;
+    }
+    if (!Number.isInteger(trainer) || trainer <= 0) {
+        console.error("Invalid Trainer ID");
+        return false;
+    }
+
     return await withOracleDB(async (connection) => {
         const typeCheck = await connection.execute(
             `SELECT TypeName FROM PokemonType WHERE TypeName = :type`,
@@ -154,6 +180,16 @@ async function insertPokemonTrainstable(id, name, type, gender, ability, trainer
 // Insert a tuple to Shows(PokemonID,StatsID)
 // Handles the foreign key PokemonID and StatsID: rejects insertion if PokemonID and StatsID doesn't exist.
 async function insertShowsTable(PokemonID,StatsID) {
+    //Sanitization
+    if (!Number.isInteger(PokemonID) || PokemonID <= 0) {
+        console.error("Invalid PokemonID");
+        return false;
+    }
+    if (!Number.isInteger(StatsID) || StatsID <= 0) {
+        console.error("Invalid StatsID");
+        return false;
+    }
+
     return await withOracleDB(async (connection) => {
         const pokemonCheck = await connection.execute(
            `SELECT PokemonID FROM PokemonTrains WHERE PokemonID = :PokemonID`,
@@ -237,6 +273,10 @@ async function updateTable(id, updates) {
 // Query 3 : Delete
 // Delete a tuple from PokemonTrains by PokemonID (PK)
 async function deleteID(id) {
+    if (!Number.isInteger(id) || id <= 0) {
+        console.error("Invalid Pokemon ID");
+        return false;
+    }
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
             `DELETE FROM PokemonTrains WHERE PokemonID = :id`,
@@ -295,6 +335,10 @@ async function projection(attribute) {
 // Query 6 : join
 // Join Trainer and PokemonTrains to find all Pokemon trained by a specific trainer
 async function trainerSearch(trainerID) {
+    if (!Number.isInteger(trainerID) || trainerID <= 0) {
+        console.error("Invalid Trainer ID");
+        return false;
+    }
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
             `SELECT t.TrainerID, t.TrainerName, p.PokemonID, p.PokemonName

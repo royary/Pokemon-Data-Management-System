@@ -153,7 +153,7 @@ INSERT ALL
     INTO BeginningTrainer (TrainerID, PrimarySkill) VALUES ('12', NULL)
     INTO BeginningTrainer (TrainerID, PrimarySkill) VALUES ('13', 'Stealth')
     INTO BeginningTrainer (TrainerID, PrimarySkill) VALUES ('14', NULL)
-SELECT * FROM dual
+SELECT * FROM dual;
 
 CREATE TABLE AdvancedTrainer (
     TrainerID VARCHAR(20),
