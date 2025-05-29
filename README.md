@@ -2,7 +2,7 @@
 
 A web-based application that provides data-driven insights for Pokémon management, built with Node.js, Express, and Oracle Database.
 
-https://github.students.cs.ubc.ca/CPSC304-2024W-T2/project_d5c1m_v4p9a_z1q8i/assets/26512/5d15e23d-2914-4248-9c56-5926b17c36be
+https://github.com/user-attachments/assets/d3bd04bf-05b7-4a1b-b174-fa8264fba46a
 
 ## Features
 
